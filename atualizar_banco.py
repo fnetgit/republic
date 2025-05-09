@@ -4,8 +4,8 @@ import sqlite3
 conn = sqlite3.connect('instance/banco.db')
 cursor = conn.cursor()
 
-# Adicionar a coluna 'usuario_id' à tabela 'apartamentos'
-cursor.execute('ALTER TABLE apartamentos ADD COLUMN usuario_id INTEGER')
+# Adicionar a coluna 'usuario_id' à tabela 'imoveis'
+cursor.execute('ALTER TABLE imoveis ADD COLUMN usuario_id INTEGER')
 
 conn.commit()
 conn.close()

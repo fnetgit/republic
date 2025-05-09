@@ -23,26 +23,26 @@
       <a href="{{ url_for('index') }}">Home</a>
       <a href="{{ url_for('sobre') }}">Sobre</a>
       <a href="{{ url_for('pesquisa') }}">Encontrar imóvel</a>
-  
+
       {% if tipo_usuario == 'anunciante' %}
-          <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
+      <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
       {% endif %}
 
       {% if tipo_usuario == 'anunciante' %}
-      <a href="{{ url_for('meus_apartamentos') }}">Meus anúncios</a>
+      <a href="{{ url_for('meus_imoveis') }}">Meus anúncios</a>
       {% endif %}
 
-  
+
       {% if usuario_nome %}
-          <div class="user-info">
-              <div class="separator">|</div>
-              <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-              <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
-          </div>
+      <div class="user-info">
+        <div class="separator">|</div>
+        <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
+      </div>
       {% else %}
-          <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
+      <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
       {% endif %}
-  </nav>  
+    </nav>
   </header>
 
   <main class="main-content">
@@ -66,7 +66,9 @@
     </div>
 
     <section class="details">
-      <h2>{{ apartamento.tipo }}: {{ apartamento.endereco }}, {{ apartamento.bairro }}</h2>
+      <h2>{{ apartamento.tipo }}: {{ apartamento.endereco }}, {{ apartamento.bairro }} - {{ apartamento.complemento }}
+      </h2>
+
       <!-- Exibe nome do dono -->
       <!-- Exemplo de como pode ficar a parte do nome do anunciante e o botão -->
       <div class="anunciante">

@@ -4,14 +4,14 @@ import sqlite3
 caminho_banco = 'instance/banco.db'
 
 
-def criar_tabela_apartamentos():
+def criar_tabela_imoveis():
     # Conecta ao banco de dados
     conn = sqlite3.connect(caminho_banco)
     cursor = conn.cursor()
 
-    # Criação da tabela apartamentos (caso ainda não exista)
+    # Criação da tabela imoveis (caso ainda não exista)
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS apartamentos (
+        CREATE TABLE IF NOT EXISTS imoveis (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             endereco TEXT,
             bairro TEXT,
@@ -35,12 +35,12 @@ def criar_tabela_apartamentos():
     conn.close()
 
 
-def cadastrar_apartamento(endereco, bairro, numero, cep, complemento, valor, quartos, banheiros, inclusos, outros, descricao, imagem, tipo, usuario_id):
+def cadastrar_imovel(endereco, bairro, numero, cep, complemento, valor, quartos, banheiros, inclusos, outros, descricao, imagem, tipo, usuario_id):
     conn = sqlite3.connect(caminho_banco)
     cursor = conn.cursor()
 
     cursor.execute('''
-        INSERT INTO apartamentos (endereco, bairro, numero, cep, complemento, valor, quartos, banheiros, inclusos, outros, descricao, imagem, tipo, usuario_id)
+        INSERT INTO imoveis (endereco, bairro, numero, cep, complemento, valor, quartos, banheiros, inclusos, outros, descricao, imagem, tipo, usuario_id)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (endereco, bairro, numero, cep, complemento, valor, quartos, banheiros, ','.join(inclusos), outros, descricao, imagem, tipo, usuario_id))
 

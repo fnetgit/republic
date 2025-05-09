@@ -20,30 +20,29 @@
             <a href="{{ url_for('index') }}">Home</a>
             <a href="{{ url_for('sobre') }}">Sobre</a>
             <a href="{{ url_for('pesquisa') }}">Encontrar imóvel</a>
-        
+
             {% if tipo_usuario == 'anunciante' %}
-                <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
+            <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
             {% endif %}
 
             {% if tipo_usuario == 'anunciante' %}
-            <a href="{{ url_for('meus_apartamentos') }}">Meus anúncios</a>
+            <a href="{{ url_for('meus_imoveis') }}">Meus anúncios</a>
             {% endif %}
 
-        
             {% if usuario_nome %}
-                <div class="user-info">
-                    <div class="separator">|</div>
-                    <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-                    <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
-                </div>
+            <div class="user-info">
+                <div class="separator">|</div>
+                <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
+            </div>
             {% else %}
-                <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
+            <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
             {% endif %}
-        </nav>        
+        </nav>
     </header>
 
     <section class="search-bar">
-        <input type="text" id="searchInput" placeholder="Pesquisar endereço...">
+        <input type="text" id="searchInput" placeholder="Pesquisar endereço..." aria-label="Pesquisar imóvel">
     </section>
 
     <main>
@@ -73,16 +72,15 @@
         </aside>
 
         <section class="cards" id="cardContainer">
-            {% for apt in apartamentos %}
+            {% for apt in imoveis %}
             <div class="card" data-tipo="{{ apt.tipo }}" data-quartos="{{ apt.quartos }}" data-valor="{{ apt.valor }}"
                 data-extras="{{ apt.inclusos|join(',') }}" data-endereco="{{ apt.endereco }}">
 
                 <div class="imagens-card">
                     {% set primeira_imagem = apt.imagens[0] if apt.imagens else 'default.jpg' %}
-                    <img src="{{ url_for('static', filename='img/imoveis/' ~ primeira_imagem) }}"
-                        alt="Imagem do imóvel">
+                    <img src="{{ url_for('static', filename='img/imoveis/' ~ primeira_imagem) }}" alt="Imagem do imóvel"
+                        loading="lazy">
                 </div>
-
 
                 <h3>{{ apt.tipo|capitalize }}</h3>
                 <p>{{ apt.quartos }} quarto{{ 's' if apt.quartos > 1 }}</p>
@@ -90,7 +88,7 @@
                 <div class="card-footer">
                     <p class="preco">R$ {{ "%.2f"|format(apt.valor|float) }}</p>
                     <div class="botao">
-                        <a href="{{ url_for('detalhes_apartamento', id=apt.id) }}">Saiba mais</a>
+                        <a href="{{ url_for('detalhes_imovel', id=apt.id) }}">Saiba mais</a>
                     </div>
                 </div>
             </div>
@@ -121,6 +119,7 @@
             </div>
         </div>
     </footer>
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 

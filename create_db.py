@@ -20,7 +20,8 @@ def criar_tabela_usuarios():
             nome TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             senha TEXT NOT NULL,
-            celular TEXT NOT NULL
+            celular TEXT NOT NULL,
+            tipo_usuario TEXT
         )
     ''')
 
@@ -28,15 +29,15 @@ def criar_tabela_usuarios():
     conn.close()
 
 
-def cadastrar_usuario(nome, email, senha, celular):
+def cadastrar_usuario(nome, email, senha, celular, tipo_usuario):
     conn = sqlite3.connect(caminho_banco)
     cursor = conn.cursor()
 
     try:
         cursor.execute('''
-            INSERT INTO usuarios (nome, email, senha, celular)
-            VALUES (?, ?, ?, ?)
-        ''', (nome, email, senha, celular))
+            INSERT INTO usuarios (nome, email, senha, celular, tipo_usuario)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (nome, email, senha, celular, tipo_usuario))
 
         conn.commit()
         conn.close()
@@ -44,3 +45,12 @@ def cadastrar_usuario(nome, email, senha, celular):
     except sqlite3.IntegrityError:
         conn.close()
         return 'Email já cadastrado.'
+
+
+# Exemplo de uso (executado só se rodar diretamente este arquivo)
+if __name__ == '__main__':
+    criar_tabela_usuarios()
+    resultado = cadastrar_usuario(
+        'Admin', 'admin@example.com', '1234', '88999999999', 'anunciante'
+    )
+    print(resultado)

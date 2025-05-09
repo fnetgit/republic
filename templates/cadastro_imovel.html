@@ -21,26 +21,26 @@
             <a href="{{ url_for('index') }}">Home</a>
             <a href="{{ url_for('sobre') }}">Sobre</a>
             <a href="{{ url_for('pesquisa') }}">Encontrar imóvel</a>
-        
+
             {% if tipo_usuario == 'anunciante' %}
-                <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
+            <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
             {% endif %}
 
             {% if tipo_usuario == 'anunciante' %}
-            <a href="{{ url_for('meus_apartamentos') }}">Meus anúncios</a>
+            <a href="{{ url_for('meus_imoveis') }}">Meus anúncios</a>
             {% endif %}
 
-        
+
             {% if usuario_nome %}
-                <div class="user-info">
-                    <div class="separator">|</div>
-                    <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-                    <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
-                </div>
+            <div class="user-info">
+                <div class="separator">|</div>
+                <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
+            </div>
             {% else %}
-                <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
+            <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
             {% endif %}
-        </nav>        
+        </nav>
     </header>
 
     <main class="container_imovel">
@@ -48,6 +48,15 @@
         <form class="form-container" method="POST" action="{{ url_for('cadastro_imovel') }}"
             enctype="multipart/form-data">
             <div class="form-left">
+                <label for="tipo">Tipo do imóvel</label>
+                <select name="tipo" id="tipo" required>
+                    <option value="">Selecione...</option>
+                    <option value="casa">Casa</option>
+                    <option value="apartamento">Apartamento</option>
+                    <option value="kitnet">Kitnet</option>
+                </select>
+
+
                 <label>Endereço</label>
                 <input type="text" name="endereco" required />
 
@@ -61,7 +70,7 @@
                 <input type="text" name="cep" placeholder="Ex: 64200-000" required />
 
                 <label>Complemento</label>
-                <input type="text" name="complemento" required />
+                <input type="text" name="complemento" placeholder="Ex: Próximo à tal lugar" required />
 
                 <label>Adicionar fotos:</label>
                 <div class="upload-foto">

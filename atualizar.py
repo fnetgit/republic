@@ -8,7 +8,7 @@ cursor = conn.cursor()
 
 # Tenta adicionar a coluna "ativo"
 try:
-    cursor.execute("ALTER TABLE apartamentos ADD COLUMN ativo INTEGER DEFAULT 1;")
+    cursor.execute("ALTER TABLE imoveis ADD COLUMN ativo INTEGER DEFAULT 1;")
     print("Coluna 'ativo' adicionada com sucesso.")
 except sqlite3.OperationalError as e:
     print("Erro:", e)

@@ -20,22 +20,22 @@
             <a href="{{ url_for('index') }}">Home</a>
             <a href="{{ url_for('sobre') }}">Sobre</a>
             <a href="{{ url_for('pesquisa') }}">Encontrar imóvel</a>
-        
+
             {% if tipo_usuario == 'anunciante' %}
-                <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
+            <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
             {% endif %}
-        
+
             {% if usuario_nome %}
-                <div class="user-info">
-                    <div class="separator">|</div>
-                    <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-                    <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
-                </div>
+            <div class="user-info">
+                <div class="separator">|</div>
+                <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
+            </div>
             {% else %}
-                <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
+            <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
             {% endif %}
         </nav>
-        
+
     </header>
 
     <!-- Seção de Login/Cadastro -->
@@ -62,8 +62,9 @@
                         <input type="text" name="nome" placeholder="Nome completo" required />
                         <input type="email" name="email" placeholder="E-mail" required />
                         <input type="password" name="senha" placeholder="Senha" required />
-                        <input type="text" name="celular" placeholder="Número de celular" required pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato: (99) 99999-9999"/>
-                    
+                        <input type="text" name="celular" placeholder="Número de celular" required
+                            pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato: (99) 99999-9999" />
+
                         <div class="tipo-usuario-container">
                             <label>
                                 <input type="radio" name="tipo_usuario" value="anunciante" required>
@@ -74,8 +75,8 @@
                                 <span>Buscando moradia</span>
                             </label>
                         </div>
-                        
-                    
+
+
                         <div class="cadastro-footer">
                             <label class="termos">
                                 <input type="checkbox" name="termos" required />
@@ -84,7 +85,7 @@
                             <button type="submit">Criar conta</button>
                         </div>
                     </form>
-                    
+
                     <div class="cadastro">
                         {% if mensagem %}
                         {% if 'sucesso' in mensagem %}

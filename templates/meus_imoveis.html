@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
-    <title>Meus Apartamentos</title>
+    <title>Meus Imóveis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <header class="header">
         <div class="logo">
@@ -16,44 +18,46 @@
             <a href="{{ url_for('index') }}">Home</a>
             <a href="{{ url_for('sobre') }}">Sobre</a>
             <a href="{{ url_for('pesquisa') }}">Encontrar imóvel</a>
-        
+
             {% if tipo_usuario == 'anunciante' %}
-                <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
+            <a href="{{ url_for('cadastro_imovel') }}">Anunciar</a>
             {% endif %}
 
             {% if tipo_usuario == 'anunciante' %}
-            <a href="{{ url_for('meus_apartamentos') }}">Meus anúncios</a>
+            <a href="{{ url_for('meus_imoveis') }}">Meus anúncios</a>
             {% endif %}
 
-        
+
             {% if usuario_nome %}
-                <div class="user-info">
-                    <div class="separator">|</div>
-                    <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-                    <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
-                </div>
+            <div class="user-info">
+                <div class="separator">|</div>
+                <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+                <a href="{{ url_for('logout') }}" class="logout-btn">Sair</a>
+            </div>
             {% else %}
-                <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
+            <a href="{{ url_for('cadastro') }}">Login / Cadastro</a>
             {% endif %}
         </nav>
-        
-    </header>
-    <h1 style="text-align: center; margin-top: 40px;">Meus Apartamentos Anunciados</h1>
 
-<main style="max-width: 1000px; margin: 0 auto; padding: 40px 20px; min-height: 60vh;">
-    {% if apartamentos %}
+    </header>
+    <h1 style="text-align: center; margin-top: 40px;">Meus Imóveis Anunciados</h1>
+
+    <main style="max-width: 1000px; margin: 0 auto; padding: 40px 20px; min-height: 60vh;">
+        {% if imoveis %}
         <ul class="ap-lista" style="list-style: none; padding: 0;">
-        {% for apt in apartamentos %}
-            <li style="display: flex; align-items: center; gap: 20px; border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9;">
-                <img src="{{ url_for('static', filename='img/imoveis/' + (apt[5] if apt[5] else 'default.jpg')) }}" width="150" style="border-radius: 8px; object-fit: cover;">
+            {% for apt in imoveis %}
+            <li
+                style="display: flex; align-items: center; gap: 20px; border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9;">
+                <img src="{{ url_for('static', filename='img/imoveis/' + (apt[5] if apt[5] else 'default.jpg')) }}"
+                    width="150" style="border-radius: 8px; object-fit: cover;">
 
                 <div style="flex: 1;">
                     <h3 style="margin: 0 0 10px;">{{ apt[4] }} - {{ apt[1] }}, {{ apt[2] }}</h3>
                     <p style="margin: 0 0 10px;">Valor: <strong>R$ {{ apt[3] }}</strong></p>
 
                     <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                        <a href="{{ url_for('detalhes_apartamento', id=apt[0]) }}" class="btn-link">Ver detalhes</a>
-                        <a href="{{ url_for('editar_apartamento', id=apt[0]) }}" class="btn-link">Editar</a>
+                        <a href="{{ url_for('detalhes_imovel', id=apt[0]) }}" class="btn-link">Ver detalhes</a>
+                        <a href="{{ url_for('editar_imovel', id=apt[0]) }}" class="btn-link">Editar</a>
 
                         {% if apt[6] == 1 %}
                         <form action="{{ url_for('parar_anuncio', id=apt[0]) }}" method="post" style="display:inline;">
@@ -65,44 +69,45 @@
                         </form>
                         {% endif %}
 
-                        <form action="{{ url_for('excluir_apartamento', id=apt[0]) }}" method="post" style="display:inline;">
-                            <button type="submit" onclick="return confirm('Tem certeza?')" class="btn-link delete">Excluir</button>
+                        <form action="{{ url_for('excluir_imovel', id=apt[0]) }}" method="post" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Tem certeza?')"
+                                class="btn-link delete">Excluir</button>
                         </form>
                     </div>
                 </div>
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
-    {% else %}
+        {% else %}
         <p style="text-align: center; font-size: 18px; margin-top: 60px;">Você ainda não cadastrou nenhum imóvel.</p>
-    {% endif %}
-</main>
+        {% endif %}
+    </main>
 
-<style>
-    .btn-link {
-        background-color: #004080;
-        color: white;
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+    <style>
+        .btn-link {
+            background-color: #004080;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    .btn-link:hover {
-        background-color: #0066cc;
-    }
+        .btn-link:hover {
+            background-color: #0066cc;
+        }
 
-    .btn-link.delete {
-        background-color: #a60000;
-    }
+        .btn-link.delete {
+            background-color: #a60000;
+        }
 
-    .btn-link.delete:hover {
-        background-color: #d10000;
-    }
-</style>
+        .btn-link.delete:hover {
+            background-color: #d10000;
+        }
+    </style>
 
 
 
@@ -131,4 +136,5 @@
     </footer>
 
 </body>
+
 </html>
