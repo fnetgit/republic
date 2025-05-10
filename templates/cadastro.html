@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Cadastro | Republic{% endblock %}
+{% block title %}Cadastro{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro.css') }}">
@@ -24,19 +24,25 @@
 
             <div class="auth-column cadastro-column">
                 <h2>Criar Conta</h2>
-                <form class="auth-form" action="/cadastro" method="post">
+                <form class="auth-form" action="/cadastro" method="post" onsubmit="return validarTelefone()">
                     <input type="text" name="nome" placeholder="Nome completo" required />
                     <input type="email" name="email" placeholder="E-mail" required />
                     <input type="password" name="senha" placeholder="Senha" required />
-                    <input type="text" name="celular" placeholder="Número de celular" required
-                        pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato: (99) 99999-9999" />
+                    <input type="text" name="telefone" id="telefone" placeholder="Telefone"
+                        pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato esperado: (99) 99999-9999" required />
 
                     <div class="tipo-usuario-container">
-                        <label><input type="radio" name="tipo_usuario" value="anunciante"
-                                required><span>Anunciante</span></label>
-                        <label><input type="radio" name="tipo_usuario" value="buscando" required><span>Buscando
-                                moradia</span></label>
+                        <p>Tipo de usuário:</p>
+                        <label>
+                            <input type="radio" name="tipo_usuario" value="anunciante" required>
+                            <span>Anunciante</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="tipo_usuario" value="buscando">
+                            <span>Buscando moradia</span>
+                        </label>
                     </div>
+
 
                     <div class="cadastro-footer">
                         <label class="termos">
@@ -56,6 +62,6 @@
 </section>
 {% endblock %}
 
-{% block extra_scripts %}
+{% block extra_js %}
 <script src="{{ url_for('static', filename='js/tel.js') }}"></script>
 {% endblock %}

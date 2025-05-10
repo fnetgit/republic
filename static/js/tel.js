@@ -1,32 +1,21 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-    const celularInput = document.querySelector('input[name="celular"]');
+    const telefoneInput = document.getElementById("telefone");
 
-    celularInput.addEventListener('input', function (e) {
-        let x = celularInput.value.replace(/\D/g, '').slice(0, 11); // só números
+    telefoneInput.addEventListener("input", function (e) {
+        let input = e.target.value;
+        input = input.replace(/\D/g, ""); // Remove tudo que não é número
 
-        if (x.length === 0) {
-            celularInput.value = "";
-        } else if (x.length <= 2) {
-            celularInput.value = `(${x}`;
-        } else if (x.length <= 6) {
-            celularInput.value = `(${x.slice(0, 2)}) ${x.slice(2)}`;
-        } else if (x.length <= 10) {
-            celularInput.value = `(${x.slice(0, 2)}) ${x.slice(2, 6)}-${x.slice(6)}`;
-        } else {
-            celularInput.value = `(${x.slice(0, 2)}) ${x.slice(2, 7)}-${x.slice(7, 11)}`;
+        if (input.length > 0) {
+            input = input.replace(/^(\d{0,2})(\d{0,5})(\d{0,4}).*/, function (match, p1, p2, p3) {
+                let result = "";
+                if (p1) result += "(" + p1;
+                if (p1 && p1.length === 2) result += ") ";
+                if (p2) result += p2;
+                if (p3) result += "-" + p3;
+                return result;
+            });
         }
-    });
 
-    // Permite apagar completamente com Backspace
-    celularInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Backspace') {
-            let x = celularInput.value.replace(/\D/g, '');
-            if (x.length === 1) {
-                celularInput.value = '';
-                e.preventDefault();
-            }
-        }
+        e.target.value = input;
     });
 });
-

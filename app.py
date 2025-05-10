@@ -125,13 +125,13 @@ def cadastro():
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
-        celular = request.form['celular']
+        telefone = request.form['telefone']
         tipo_usuario = request.form['tipo_usuario']
         db = get_db()
         try:
             db.execute(
-                'INSERT INTO usuarios (nome, email, senha, celular, tipo_usuario) VALUES (?, ?, ?, ?, ?)',
-                (nome, email, senha, celular, tipo_usuario)
+                'INSERT INTO usuarios (nome, email, senha, telefone, tipo_usuario) VALUES (?, ?, ?, ?, ?)',
+                (nome, email, senha, telefone, tipo_usuario)
             )
             db.commit()
             mensagem_cadastro = 'Cadastro realizado com sucesso!'
@@ -336,7 +336,7 @@ def inicializar_banco():
             nome TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             senha TEXT NOT NULL,
-            celular TEXT,
+            telefone TEXT,
             tipo_usuario TEXT
         )
     ''')
