@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Imóvel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro_imovel.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="container_imovel">
+    <h1>EDITAR INFORMAÇÕES DO IMÓVEL</h1>
+    <form class="form-container" id="editarImovelForm">
+        <input type="hidden" id="imovelId" name="imovelId">
+        <div class="form-left">
+            <label for="tipo">Tipo do imóvel</label>
+            <select name="tipo" id="tipo" required>
+                <option value="">Selecione...</option>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="kitnet">Kitnet</option>
+            </select>
+
+            <label>Endereço</label>
+            <input type="text" name="endereco" id="endereco" required />
+
+            <label>Bairro</label>
+            <input type="text" name="bairro" id="bairro" required />
+
+            <label>Número</label>
+            <input type="text" name="numero" id="numero" required />
+
+            <label>CEP</label>
+            <input type="text" name="cep" id="cep" placeholder="Ex: 64200-000" required />
+
+            <label>Complemento</label>
+            <input type="text" name="complemento" id="complemento" placeholder="Ex: Próximo à tal lugar" required />
+
+            <label>Adicionar fotos:</label>
+            <div class="upload-foto">
+                <input type="file" name="fotos" id="foto-input" style="display:none" multiple
+                    onchange="previewImages(event)">
+                <label for="foto-input" class="btn-upload">+</label>
+            </div>
+
+            <div id="image-preview-container"></div>
+            <div id="existing-images-container"></div>
+
+            <label>Valor (mês)</label>
+            <div class="input-valor">
+                <span class="prefixo">R$</span>
+                <input type="text" name="valor" id="valor" placeholder="0,00" required />
+            </div>
+        </div>
+
+        <div class="form-right">
+            <div class="box">
+                <label>Quantidade de quartos</label>
+                <input type="number" name="quartos" id="quartos" min="0" placeholder="Ex: 3" required />
+
+                <label>Quantidade de banheiros</label>
+                <input type="number" name="banheiros" id="banheiros" min="0" placeholder="Ex: 2" required />
+
+                <label>Inclusos:</label>
+                <label><input type="checkbox" name="inclusos" value="Água"> Água</label>
+                <label><input type="checkbox" name="inclusos" value="Luz"> Luz</label>
+                <label><input type="checkbox" name="inclusos" value="Internet"> Internet</label>
+                <label><input type="checkbox" name="inclusos" value="Mobiliado"> Mobiliado</label>
+                <label><input type="checkbox" name="inclusos" value="Gás"> Gás</label>
+                <label><input type="checkbox" name="inclusos" value="Garagem"> Garagem</label>
+
+                <label for="outros">Outros:</label>
+                <input type="text" id="outros" name="outros" placeholder="Ex: Piscina, Faxina..." />
+            </div>
+
+            <div class="descricao">
+                <label><strong>Descrição do imóvel</strong></label>
+                <textarea name="descricao" id="descricao" required></textarea>
+            </div>
+        </div>
+
+        <button type="submit">Confirmar Edição</button>
+    </form>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Função para pré-visualizar imagens selecionadas
+    function previewImages(event) {
+        const files = event.target.files;
+        const previewContainer = document.getElementById('image-preview-container');
+        previewContainer.innerHTML = '';
+        if (files.length > 5) {
+            alert('Você pode adicionar até 5 imagens.');
+            return;
+        }
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('preview-img');
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    function getUrlParams() {
+        const parts = window.location.pathname.split('/');
+        return { id: parts[parts.length - 1] };
+    }
+
+    async function carregarDadosImovel() {
+        const { id } = getUrlParams();
+        if (!id) {
+            alert('ID não fornecido');
+            return;
+        }
+        const resp = await fetch(`/api/imovel/${id}`);
+        if (!resp.ok) {
+            const err = await resp.json();
+            alert(err.erro || 'Falha ao carregar');
+            return;
+        }
+        const imovel = await resp.json();
+        document.getElementById('imovelId').value = imovel.id;
+        ['tipo', 'endereco', 'bairro', 'numero', 'cep', 'complemento', 'valor', 'quartos', 'banheiros', 'outros', 'descricao']
+            .forEach(field => document.getElementById(field).value = imovel[field] || '');
+        imovel.inclusos?.forEach(item => {
+            const cb = document.querySelector(`input[name="inclusos"][value="${item}"]`);
+            if (cb) cb.checked = true;
+        });
+        const existing = document.getElementById('existing-images-container');
+        if (imovel.fotos?.length) {
+            existing.innerHTML = '<h3>Imagens atuais:</h3>';
+            imovel.fotos.forEach((f, i) => {
+                const wrap = document.createElement('div');
+                wrap.className = 'existing-img-wrapper';
+                const img = document.createElement('img');
+                img.src = f;
+                img.className = 'existing-img';
+                const btn = document.createElement('button');
+                btn.type = 'button'; btn.textContent = 'X';
+                btn.onclick = () => wrap.remove();
+                wrap.append(img, btn);
+                existing.append(wrap);
+            });
+        }
+    }
+
+    async function enviarFormulario(e) {
+        e.preventDefault();
+        const id = document.getElementById('imovelId').value;
+        const dados = { inclusos: [] };
+        new FormData(e.target).forEach((v, k) => {
+            if (k === 'inclusos') dados.inclusos.push(v);
+            else dados[k] = v;
+        });
+        const fd = new FormData();
+        fd.append('dados', JSON.stringify(dados));
+        for (let file of document.getElementById('foto-input').files) fd.append('novas_fotos', file);
+        const resp = await fetch(`/api/imoveis/${id}`, { method: 'PUT', body: fd });
+        if (!resp.ok) throw new Error('Erro na atualização');
+        alert('Atualizado!');
+        window.location.href = "{{ url_for('meus_imoveis') }}";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarDadosImovel();
+        document.getElementById('editarImovelForm').onsubmit = enviarFormulario;
+    });
+</script>
+{% endblock %}

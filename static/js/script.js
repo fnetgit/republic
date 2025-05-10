@@ -1,88 +1,129 @@
+// Máscara simples de CEP: 12345-678
+function maskCEP(input) {
+    input.addEventListener('input', () => {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5, 8);
+        input.value = v;
+    });
+}
+
+// Formata valor como moeda brasileira: 1.234,56
+function maskCurrency(input) {
+    input.addEventListener('input', () => {
+        let v = input.value.replace(/\D/g, '');
+        v = (v / 100).toFixed(2) + '';
+        v = v.replace('.', ',');
+        v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        input.value = v;
+    });
+}
+
+// Pré-visualização de imagens selecionadas
+function previewImages(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('image-preview-container');
+    previewContainer.innerHTML = '';
+
+    if (files.length > 5) {
+        alert('Você pode adicionar até 5 imagens.');
+        event.target.value = '';  // limpa seleção
+        return;
+    }
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('preview-img');
+            previewContainer.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function getUrlParams() {
+    const parts = window.location.pathname.split('/');
+    return { id: parts.pop() };
+}
+
+async function carregarDadosImovel() {
+    const { id } = getUrlParams();
+    if (!id) { alert('ID não fornecido'); return; }
+
+    const resp = await fetch(`/api/imovel/${id}`);
+    if (!resp.ok) {
+        const err = await resp.json();
+        alert(err.erro || 'Falha ao carregar');
+        return;
+    }
+
+    const imovel = await resp.json();
+    document.getElementById('imovelId').value = imovel.id;
+    ['tipo', 'endereco', 'bairro', 'numero', 'cep', 'complemento', 'valor', 'quartos', 'banheiros', 'outros', 'descricao']
+        .forEach(f => document.getElementById(f).value = imovel[f] || '');
+
+    imovel.inclusos?.forEach(item => {
+        const cb = document.querySelector(`input[name="inclusos"][value="${item}"]`);
+        if (cb) cb.checked = true;
+    });
+
+    const existing = document.getElementById('existing-images-container');
+    if (imovel.fotos?.length) {
+        existing.innerHTML = '<h3>Imagens atuais:</h3>';
+        imovel.fotos.forEach(f => {
+            const wrap = document.createElement('div');
+            wrap.className = 'existing-img-wrapper';
+            const img = document.createElement('img');
+            img.src = f;
+            img.className = 'existing-img';
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = 'X';
+            btn.onclick = () => wrap.remove();
+            wrap.append(img, btn);
+            existing.append(wrap);
+        });
+    }
+}
+
+async function enviarFormulario(e) {
+    e.preventDefault();
+
+    // Validação: pelo menos uma foto (existente ou nova)
+    const existentes = document.querySelectorAll('#existing-images-container img').length;
+    const novas = document.getElementById('foto-input').files.length;
+    if (existentes + novas === 0) {
+        alert('Adicione ao menos uma foto do imóvel.');
+        return;
+    }
+
+    const id = document.getElementById('imovelId').value;
+    const dados = { inclusos: [] };
+    new FormData(e.target).forEach((v, k) => {
+        if (k === 'inclusos') dados.inclusos.push(v);
+        else dados[k] = v;
+    });
+
+    const fd = new FormData();
+    fd.append('dados', JSON.stringify(dados));
+    Array.from(document.getElementById('foto-input').files)
+        .forEach(file => fd.append('novas_fotos', file));
+
+    const resp = await fetch(`/api/imoveis/${id}`, { method: 'PUT', body: fd });
+    if (!resp.ok) {
+        const err = await resp.text();
+        alert(err || 'Erro na atualização');
+        return;
+    }
+
+    alert('Atualizado!');
+    window.location.href = "{{ url_for('meus_imoveis') }}";
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    const loadMoreBtn = document.getElementById('loadMore');
-    const cards = document.querySelectorAll('.card');
-    const filtros = document.querySelectorAll('input');
-    const searchInput = document.getElementById('searchInput');
-
-    if (!cards.length) return; // Se não houver cards, encerra o script
-
-    // Função para filtrar por valor
-    function filtrarPorValor(card, valor) {
-        const cardValor = parseInt(card.dataset.valor);
-        if (valor === '500' && cardValor > 500) return false;
-        if (valor === '1000' && (cardValor <= 500 || cardValor > 1000)) return false;
-        if (valor === 'acima' && cardValor <= 1000) return false;
-        return true;
-    }
-
-    // Função para filtrar por tipo
-    function filtrarPorTipo(card, tipos) {
-        const cardTipo = card.dataset.tipo;
-        return tipos.length ? tipos.includes(cardTipo) : true;
-    }
-
-    // Função para filtrar por quartos
-    function filtrarPorQuartos(card, quartos) {
-        const cardQuartos = parseInt(card.dataset.quartos);
-        return quartos.length ? quartos.includes(cardQuartos >= 3 ? '3' : String(cardQuartos)) : true;
-    }
-
-    // Função para filtrar por extras
-    function filtrarPorExtras(card, extras) {
-        const cardExtras = card.dataset.extras.split(',');
-        return extras.length ? extras.every(extra => cardExtras.includes(extra)) : true;
-    }
-
-    // Função para filtrar por endereço (pesquisa)
-    function filtrarPorEndereco(card, search) {
-        const cardEndereco = card.dataset.endereco.toLowerCase();
-        return cardEndereco.includes(search);
-    }
-
-    // Função principal de filtro
-    function filtrar() {
-        const valor = document.querySelector('input[name="valor"]:checked')?.value;
-        const tipos = Array.from(document.querySelectorAll('input[name="tipo"]:checked')).map(e => e.value);
-        const quartos = Array.from(document.querySelectorAll('input[name="quartos"]:checked')).map(e => e.value);
-        const extras = Array.from(document.querySelectorAll('input[name="extras"]:checked')).map(e => e.value);
-        const search = searchInput?.value.toLowerCase() || '';
-
-        cards.forEach(card => {
-            let show = true;
-
-            // Aplica cada filtro de maneira modularizada
-            if (valor && valor !== 'todos' && !filtrarPorValor(card, valor)) show = false;
-            if (tipos.length && !filtrarPorTipo(card, tipos)) show = false;
-            if (quartos.length && !filtrarPorQuartos(card, quartos)) show = false;
-            if (extras.length && !filtrarPorExtras(card, extras)) show = false;
-            if (search && !filtrarPorEndereco(card, search)) show = false;
-
-            card.style.display = show ? 'block' : 'none';
-        });
-    }
-
-    // Inicializa com 6 cards visíveis e esconde os outros
-    cards.forEach((card, index) => {
-        if (index >= 6) {
-            card.classList.add('hidden');
-        }
-    });
-
-    filtrar(); // Filtro inicial
-
-    // Botão "Carregar mais"
-    loadMoreBtn?.addEventListener('click', () => {
-        document.querySelectorAll('.card.hidden').forEach(card => {
-            card.classList.remove('hidden');
-        });
-        loadMoreBtn.style.display = 'none';
-        filtrar();
-    });
-
-    // Filtros e pesquisa
-    filtros.forEach(input => {
-        input.addEventListener('input', filtrar);
-    });
-
-    searchInput?.addEventListener('input', filtrar);
+    maskCEP(document.getElementById('cep'));
+    maskCurrency(document.getElementById('valor'));
+    carregarDadosImovel();
+    document.getElementById('editarImovelForm').onsubmit = enviarFormulario;
 });

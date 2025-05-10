@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session, g
+from flask import Flask, render_template, request, redirect, url_for, session, g, jsonify
 import sqlite3
 import os
+import json
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -55,7 +56,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return wrapped
 
-# ----- ROTAS -----
+# ----- ROTAS DE PÁGINAS -----
 
 
 @app.route('/')
@@ -114,6 +115,8 @@ def detalhes_imovel(id):
         ',') if apt['imagem'] else ['default.jpg']
     return render_template('apt.html', apartamento=apt, dono_nome=apt['dono'], usuario_logado=session.get('usuario_id'))
 
+# ----- AUTENTICAÇÃO E CADASTRO -----
+
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
@@ -159,6 +162,8 @@ def login():
 def logout():
     session.pop('usuario_id', None)
     return redirect(url_for('cadastro'))
+
+# ----- GERENCIAMENTO DE IMÓVEIS -----
 
 
 @app.route('/cadastro_imovel', methods=['GET', 'POST'])
@@ -209,15 +214,10 @@ def meus_imoveis():
     return render_template('meus_imoveis.html', imoveis=rows)
 
 
-@app.route('/editar_imovel/<int:id>', methods=['GET', 'POST'])
+@app.route('/editar_imovel/<int:id>', methods=['GET'])
 @login_required
 def editar_imovel(id):
     db = get_db()
-    if request.method == 'POST':
-        db.execute('UPDATE imoveis SET valor = ?, descricao = ? WHERE id = ? AND usuario_id = ?',
-                   (request.form['valor'], request.form['descricao'], id, session['usuario_id']))
-        db.commit()
-        return redirect(url_for('meus_imoveis'))
     apt = db.execute(
         'SELECT valor, descricao FROM imoveis WHERE id = ? AND usuario_id = ?',
         (id, session['usuario_id'])
@@ -225,6 +225,72 @@ def editar_imovel(id):
     if not apt:
         return "Imóvel não encontrado ou não autorizado", 404
     return render_template('editar_imovel.html', id=id, valor=apt['valor'], descricao=apt['descricao'])
+
+# ----- ROTAS API JSON -----
+
+
+@app.route('/api/imovel/<int:id>')
+@login_required
+def api_get_imovel(id):
+    db = get_db()
+    imovel = db.execute(
+        'SELECT * FROM imoveis WHERE id = ? AND usuario_id = ?',
+        (id, session['usuario_id'])
+    ).fetchone()
+    if not imovel:
+        return jsonify({'erro': 'Imóvel não encontrado'}), 404
+    return jsonify({
+        'id': imovel['id'],
+        'tipo': imovel['tipo'],
+        'endereco': imovel['endereco'],
+        'bairro': imovel['bairro'],
+        'numero': imovel['numero'],
+        'cep': imovel['cep'],
+        'complemento': imovel['complemento'],
+        'valor': imovel['valor'],
+        'quartos': imovel['quartos'],
+        'banheiros': imovel['banheiros'],
+        'inclusos': imovel['inclusos'].split(',') if imovel['inclusos'] else [],
+        'outros': imovel['outros'],
+        'descricao': imovel['descricao'],
+        'fotos': imovel['imagem'].split(',') if imovel['imagem'] else []
+    })
+
+
+@app.route('/api/imoveis/<int:id>', methods=['PUT'])
+@login_required
+def atualizar_imovel(id):
+    dados_json = request.form.get('dados')
+    if not dados_json:
+        return 'Dados inválidos', 400
+    try:
+        dados = json.loads(dados_json)
+    except json.JSONDecodeError:
+        return 'Erro ao decodificar JSON', 400
+    db = get_db()
+    db.execute('''
+        UPDATE imoveis
+        SET tipo = ?, endereco = ?, bairro = ?, numero = ?, cep = ?, complemento = ?, valor = ?, 
+            quartos = ?, banheiros = ?, inclusos = ?, outros = ?, descricao = ?
+        WHERE id = ? AND usuario_id = ?
+    ''', (
+        dados.get('tipo'),
+        dados.get('endereco'),
+        dados.get('bairro'),
+        dados.get('numero'),
+        dados.get('cep'),
+        dados.get('complemento'),
+        dados.get('valor'),
+        dados.get('quartos'),
+        dados.get('banheiros'),
+        ','.join(dados.get('inclusos', [])),
+        dados.get('outros'),
+        dados.get('descricao'),
+        id,
+        session['usuario_id']
+    ))
+    db.commit()
+    return '', 204
 
 
 @app.route('/excluir_imovel/<int:id>', methods=['POST'])
@@ -290,8 +356,6 @@ def inicializar_banco():
     db.close()
 
 
-# Inicializa banco e executa a aplicação
-inicializar_banco()
-
 if __name__ == '__main__':
+    inicializar_banco()
     app.run(debug=True)
