@@ -127,3 +127,79 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarDadosImovel();
     document.getElementById('editarImovelForm').onsubmit = enviarFormulario;
 });
+
+
+// filtros
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.card');
+
+    // Filtros
+    const valorRadios = document.querySelectorAll('input[name="valor"]');
+    const tipoCheckboxes = document.querySelectorAll('input[name="tipo"]');
+    const quartosCheckboxes = document.querySelectorAll('input[name="quartos"]');
+    const extrasCheckboxes = document.querySelectorAll('input[name="extras"]');
+
+    function getCheckedValues(inputs) {
+        return Array.from(inputs)
+            .filter(input => input.checked)
+            .map(input => input.value);
+    }
+
+    function filtrarCards() {
+        const searchText = searchInput.value.toLowerCase();
+
+        const valorSelecionado = document.querySelector('input[name="valor"]:checked').value;
+        const tiposSelecionados = getCheckedValues(tipoCheckboxes);
+        const quartosSelecionados = getCheckedValues(quartosCheckboxes);
+        const extrasSelecionados = getCheckedValues(extrasCheckboxes);
+
+        cards.forEach(card => {
+            const tipo = card.dataset.tipo;
+            const quartos = parseInt(card.dataset.quartos);
+            const valor = parseFloat(card.dataset.valor);
+            const extras = card.dataset.extras.toLowerCase();
+            const endereco = card.dataset.endereco.toLowerCase();
+
+            // Filtro de valor
+            let passaValor = false;
+            if (valorSelecionado === 'todos') {
+                passaValor = true;
+            } else if (valorSelecionado === '500') {
+                passaValor = valor <= 500;
+            } else if (valorSelecionado === '1000') {
+                passaValor = valor <= 1000;
+            } else if (valorSelecionado === 'acima') {
+                passaValor = valor > 1000;
+            }
+
+            // Filtro de tipo
+            let passaTipo = tiposSelecionados.length === 0 || tiposSelecionados.includes(tipo);
+
+            // Filtro de quartos
+            let passaQuartos = quartosSelecionados.length === 0 ||
+                (quartosSelecionados.includes('3') && quartos >= 3) ||
+                quartosSelecionados.includes(String(quartos));
+
+            // Filtro de extras
+            let passaExtras = extrasSelecionados.every(extra => extras.includes(extra));
+
+            // Filtro de busca por endereço
+            let passaBusca = endereco.includes(searchText);
+
+            // Mostrar ou ocultar
+            if (passaValor && passaTipo && passaQuartos && passaExtras && passaBusca) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Eventos
+    searchInput.addEventListener('input', filtrarCards);
+    valorRadios.forEach(r => r.addEventListener('change', filtrarCards));
+    tipoCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+    quartosCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+    extrasCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+});
