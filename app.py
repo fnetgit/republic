@@ -103,17 +103,27 @@ def detalhes_imovel(id):
     db = get_db()
     r = db.execute(
         """
-        SELECT *, (SELECT nome FROM usuarios WHERE id = imoveis.usuario_id) AS dono
-        FROM imoveis WHERE id = ?
+        SELECT imoveis.*, usuarios.nome AS dono, usuarios.telefone AS telefone_dono
+        FROM imoveis
+        JOIN usuarios ON usuarios.id = imoveis.usuario_id
+        WHERE imoveis.id = ?
         """, (id,)
     ).fetchone()
+
     if not r:
         return "Imóvel não encontrado", 404
+
     apt = dict(r)
     apt['inclusos'] = apt['inclusos'].split(',') if apt['inclusos'] else []
-    apt['imagens'] = apt['imagem'].split(
-        ',') if apt['imagem'] else ['default.jpg']
-    return render_template('apt.html', apartamento=apt, dono_nome=apt['dono'], usuario_logado=session.get('usuario_id'))
+    apt['imagens'] = apt['imagem'].split(',') if apt['imagem'] else ['default.jpg']
+
+    return render_template(
+        'apt.html',
+        apartamento=apt,
+        dono_nome=r['dono'],
+        telefone_dono=r['telefone_dono'],
+        usuario_logado=session.get('usuario_id')
+    )
 
 # ----- AUTENTICAÇÃO E CADASTRO -----
 
