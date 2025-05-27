@@ -58,7 +58,7 @@ textarea {
 .prefixo {
     position: absolute;
     left: 10px;
-    top: 50%;
+    top: 33%;
     transform: translateY(-50%);
     color: #666;
 }
