@@ -32,14 +32,15 @@
     <h2>{{ apartamento.tipo }}: {{ apartamento.endereco }}, {{ apartamento.bairro }}{% if apartamento.complemento %} -
       {{ apartamento.complemento }}{% endif %}</h2>
 
-    <div class="anunciante">
-      <span>Anunciante: {{ dono_nome }}</span>
-      {% if usuario_logado == apartamento.usuario_id %}
-      <form action="{{ url_for('parar_anuncio', id=apartamento.id) }}" method="POST" class="inline-form">
-        <button type="submit" class="btn btn-danger">Parar Anúncio</button>
-      </form>
-      {% endif %}
+    <div class="anunciante" style="display: flex; align-items: center; gap: 10px;">
+  <span>Anunciante: {{ dono_nome }}</span>
+  {% if usuario_logado == apartamento.usuario_id %}
+  <form action="{{ url_for('parar_anuncio', id=apartamento.id) }}" method="POST" class="inline-form">
+    <button type="submit" class="btn btn-danger">Parar Anúncio</button>
+  </form>
+  {% endif %}
     </div>
+
 
     <ul class="info">
       <li>{{ apartamento.quartos }} quartos</li>
