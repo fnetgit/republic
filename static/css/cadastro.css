@@ -97,21 +97,34 @@
     margin-top: 10px;
 }
 
-/* Label dos termos */
 .termos {
     font-size: 14px;
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;  /* evita quebrar para a linha de baixo */
     gap: 5px;
 }
 
 .termos input {
-    margin-right: 5px;
+    margin: 0; /* remove espaço extra */
+}
+
+.termos a {
+    white-space: nowrap; /* impede quebra no link */
+}
+
+.cadastro-footer {
+    max-width: 480px;
+    display: flex;
+    justify-content: center; /* centraliza se quiser */
+    padding-top: 10px;
+    
 }
 
 /* Botão */
 .cadastro-footer button {
     padding: 10px 16px;
+    margin-left: 50px;
     background-color: #000000;
     color: white;
     border: none;
