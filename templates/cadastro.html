@@ -24,8 +24,14 @@
 
             <div class="auth-column cadastro-column">
                 <h2>Criar Conta</h2>
-                <form class="auth-form" action="/cadastro" method="post" onsubmit="return validarTelefone()">
+                <form class="auth-form" action="/cadastro" method="post" onsubmit="return validarTelefoneECPF()">
                     <input type="text" name="nome" placeholder="Nome completo" required />
+
+                    <div class="cpf-field" id="cpfFieldContainer">
+                        <input type="text" name="cpf" id="cpf" placeholder="CPF (somente números)" pattern="\d{11}"
+                            title="CPF deve conter 11 números." required />
+                    </div>
+
                     <input type="email" name="email" placeholder="E-mail" required />
                     <input type="password" name="senha" placeholder="Senha" required />
                     <input type="text" name="telefone" id="telefone" placeholder="Telefone"
@@ -38,11 +44,10 @@
                             <span>Anunciante</span>
                         </label>
                         <label>
-                            <input type="radio" name="tipo_usuario" value="buscando">
+                            <input type="radio" name="tipo_usuario" value="buscando" required>
                             <span>Buscando moradia</span>
                         </label>
                     </div>
-
 
                     <div class="cadastro-footer">
                         <label class="termos">
@@ -50,7 +55,6 @@
                             <span>Concordo com os <a href="{{ url_for('termos') }}">Termos de serviço</a></span>
                         </label>
                         <button type="submit">Criar conta</button>
-
                     </div>
                 </form>
 
@@ -64,5 +68,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/tel.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cadastro_geral.js') }}"></script>
 {% endblock %}

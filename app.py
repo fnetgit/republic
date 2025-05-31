@@ -1,3 +1,5 @@
+from functools import wraps
+from flask import session, redirect, url_for
 from flask import Flask, render_template, request, redirect, url_for, session, g, jsonify
 import sqlite3
 import os
@@ -48,8 +50,6 @@ def inject_usuario():
 
 # ----- DECORATOR LOGIN -----
 
-from functools import wraps
-from flask import session, redirect, url_for
 
 def login_required(f):
     @wraps(f)
@@ -58,7 +58,7 @@ def login_required(f):
         if 'usuario_id' not in session:
             # Se não estiver logado, redireciona para a página de login
             return redirect(url_for('login'))
-        
+
         # Se estiver logado, executa a função normalmente
         return f(*args, **kwargs)
 
@@ -125,7 +125,8 @@ def detalhes_imovel(id):
 
     apt = dict(r)
     apt['inclusos'] = apt['inclusos'].split(',') if apt['inclusos'] else []
-    apt['imagens'] = apt['imagem'].split(',') if apt['imagem'] else ['default.jpg']
+    apt['imagens'] = apt['imagem'].split(
+        ',') if apt['imagem'] else ['default.jpg']
 
     return render_template(
         'apt.html',
@@ -342,17 +343,20 @@ def ativar_anuncio(id):
     db.commit()
     return redirect(url_for('meus_imoveis'))
 
+
 def admin_required(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
         if 'usuario_id' not in session:
             return redirect(url_for('login'))
         db = get_db()
-        user = db.execute('SELECT tipo_usuario FROM usuarios WHERE id = ?', (session['usuario_id'],)).fetchone()
+        user = db.execute('SELECT tipo_usuario FROM usuarios WHERE id = ?',
+                          (session['usuario_id'],)).fetchone()
         if not user or user['tipo_usuario'] != 'admin':
             return "Acesso não autorizado", 403
         return f(*args, **kwargs)
     return wrapped
+
 
 @app.route('/admin')
 @login_required
@@ -361,12 +365,14 @@ def admin():
     db = get_db()
 
     # Total de usuários
-    usuarios = db.execute('SELECT id, nome, email, telefone, tipo_usuario FROM usuarios').fetchall()
+    usuarios = db.execute(
+        'SELECT id, nome, email, telefone, tipo_usuario FROM usuarios').fetchall()
     total_usuarios = len(usuarios)
 
     # Contagem de imóveis
     total_imoveis = db.execute('SELECT COUNT(*) FROM imoveis').fetchone()[0]
-    ativos = db.execute('SELECT COUNT(*) FROM imoveis WHERE ativo = 1').fetchone()[0]
+    ativos = db.execute(
+        'SELECT COUNT(*) FROM imoveis WHERE ativo = 1').fetchone()[0]
     inativos = total_imoveis - ativos
 
     return render_template(
@@ -379,20 +385,20 @@ def admin():
         acessos=app.acessos
     )
 
+
 @app.route('/admin/excluir_usuario/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def excluir_usuario(id):
     if id == session['usuario_id']:
-        flash("Você não pode excluir seu próprio usuário.")
+        Flask("Você não pode excluir seu próprio usuário.")
         return redirect(url_for('admin'))
 
     db = get_db()
     db.execute('DELETE FROM usuarios WHERE id = ?', (id,))
     db.commit()
-    flash("Usuário excluído com sucesso.")
+    Flask("Usuário excluído com sucesso.")
     return redirect(url_for('admin'))
-
 
 
 # ----- INICIALIZAÇÃO DO BANCO -----
