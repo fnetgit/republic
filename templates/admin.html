@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <h1>Painel Administrativo</h1>
+    <div class="stats">
+        <div><strong>Usuários cadastrados:</strong> {{ total_usuarios }}</div>
+        <div><strong>Imóveis ativos:</strong> {{ ativos }}</div>
+        <div><strong>Imóveis inativos:</strong> {{ inativos }}</div>
+        <div><strong>Total de imóveis:</strong> {{ total_imoveis }}</div>
+        <div><strong>Estimativa de acessos (sessão atual):</strong> {{ acessos }}</div>
+    </div>
+
+    <h2>Lista de Usuários</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Tipo</th>
+                <th>Ações</th> <!-- nova coluna -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.nome }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.telefone }}</td>
+                <td>{{ u.tipo_usuario }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('excluir_usuario', id=u.id) }}" onsubmit="return confirm('Confirma a exclusão do usuário {{ u.nome }}?');">
+                        <button type="submit" class="btn-excluir">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

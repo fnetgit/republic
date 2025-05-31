@@ -1,0 +1,67 @@
+/* static/admin.css */
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 2rem;
+    background-color: #fafafa;
+    color: #333;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #ecf0f1;
+    font-weight: bold;
+}
+
+.stats {
+    margin-bottom: 2rem;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.stats div {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+h2 {
+    margin-top: 2rem;
+    color: #34495e;
+}
+
+/* Botão excluir estilizado */
+.btn-excluir {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #c0392b;
+}

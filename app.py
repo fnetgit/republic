@@ -4,9 +4,12 @@ import os
 import json
 from werkzeug.utils import secure_filename
 
+
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta'
 DATABASE = 'instance/banco.db'
+
+app.acessos = 0
 
 # ----- UTILITÁRIOS DE BANCO DE DADOS -----
 
@@ -45,22 +48,29 @@ def inject_usuario():
 
 # ----- DECORATOR LOGIN -----
 
+from functools import wraps
+from flask import session, redirect, url_for
 
 def login_required(f):
-    from functools import wraps
-
     @wraps(f)
     def wrapped(*args, **kwargs):
+        # Verifica se o ID do usuário está salvo na sessão
         if 'usuario_id' not in session:
+            # Se não estiver logado, redireciona para a página de login
             return redirect(url_for('login'))
+        
+        # Se estiver logado, executa a função normalmente
         return f(*args, **kwargs)
+
     return wrapped
+
 
 # ----- ROTAS DE PÁGINAS -----
 
 
 @app.route('/')
 def index():
+    app.acessos += 1
     return render_template('index.html')
 
 
@@ -79,7 +89,7 @@ def pesquisa():
     db = get_db()
     rows = db.execute(
         """
-        SELECT id, tipo, quartos, valor, endereco, inclusos, imagem
+        SELECT id, tipo, endereco, quartos, valor, endereco, inclusos, imagem
         FROM imoveis
         WHERE ativo = 1
         """
@@ -331,6 +341,59 @@ def ativar_anuncio(id):
                (id, session['usuario_id']))
     db.commit()
     return redirect(url_for('meus_imoveis'))
+
+def admin_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if 'usuario_id' not in session:
+            return redirect(url_for('login'))
+        db = get_db()
+        user = db.execute('SELECT tipo_usuario FROM usuarios WHERE id = ?', (session['usuario_id'],)).fetchone()
+        if not user or user['tipo_usuario'] != 'admin':
+            return "Acesso não autorizado", 403
+        return f(*args, **kwargs)
+    return wrapped
+
+@app.route('/admin')
+@login_required
+@admin_required
+def admin():
+    db = get_db()
+
+    # Total de usuários
+    usuarios = db.execute('SELECT id, nome, email, telefone, tipo_usuario FROM usuarios').fetchall()
+    total_usuarios = len(usuarios)
+
+    # Contagem de imóveis
+    total_imoveis = db.execute('SELECT COUNT(*) FROM imoveis').fetchone()[0]
+    ativos = db.execute('SELECT COUNT(*) FROM imoveis WHERE ativo = 1').fetchone()[0]
+    inativos = total_imoveis - ativos
+
+    return render_template(
+        'admin.html',
+        usuarios=usuarios,
+        total_usuarios=total_usuarios,
+        total_imoveis=total_imoveis,
+        ativos=ativos,
+        inativos=inativos,
+        acessos=app.acessos
+    )
+
+@app.route('/admin/excluir_usuario/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def excluir_usuario(id):
+    if id == session['usuario_id']:
+        flash("Você não pode excluir seu próprio usuário.")
+        return redirect(url_for('admin'))
+
+    db = get_db()
+    db.execute('DELETE FROM usuarios WHERE id = ?', (id,))
+    db.commit()
+    flash("Usuário excluído com sucesso.")
+    return redirect(url_for('admin'))
+
+
 
 # ----- INICIALIZAÇÃO DO BANCO -----
 
