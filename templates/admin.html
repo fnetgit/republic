@@ -8,6 +8,7 @@
 
 {% block content %}
 <h1>Painel Administrativo</h1>
+
 <div class="stats">
     <div><strong>Usuários cadastrados:</strong> {{ total_usuarios }}</div>
     <div><strong>Imóveis ativos:</strong> {{ ativos }}</div>
@@ -16,37 +17,89 @@
     <div><strong>Estimativa de acessos (sessão atual):</strong> {{ acessos }}</div>
 </div>
 
-<h2>Lista de Usuários</h2>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Tipo</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for u in usuarios %}
-        <tr>
-            <td>{{ u.id }}</td>
-            <td>{{ u.nome }}</td>
-            <td>{{ u.email }}</td>
-            <td>{{ u.telefone }}</td>
-            <td>{{ u.tipo_usuario }}</td>
-            <td>
-                <form method="POST" action="{{ url_for('excluir_usuario', id=u.id) }}"
-                    onsubmit="return confirm('Confirma a exclusão do usuário {{ u.nome }}?');">
-                    <button type="submit" class="btn-excluir">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+<div class="admin-container">
+    <!-- Lista de Usuários -->
+    <div class="admin-section">
+        <h2>Lista de Usuários</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.nome }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.telefone }}</td>
+                    <td>{{ u.tipo_usuario }}</td>
+                    <td>
+                        {% if u.id != session.usuario_id %}
+                        <form method="post" action="{{ url_for('excluir_usuario', id=u.id) }}" style="display:inline;">
+                            <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">Excluir</button>
+                        </form>
+                        {% else %}
+                        <em>Não pode excluir</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-{% block extra_js %}
+    <!-- Lista de Imóveis -->
+    <div class="admin-section">
+        <h2>Lista de Imóveis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Endereço</th>
+                    <th>Valor</th>
+                    <th>Dono</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for imovel in imoveis %}
+                <tr>
+                    <td>{{ imovel.id }}</td>
+                    <td>{{ imovel.tipo }}</td>
+                    <td>{{ imovel.endereco }}</td>
+                    <td>{{ imovel.valor }}</td>
+                    <td>{{ imovel.dono_nome }}</td>
+                    <td>{{ 'Ativo' if imovel.ativo else 'Inativo' }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <form method="post" action="{{ url_for('admin_toggle_anuncio', id=imovel.id) }}" style="display:inline;">
+                                <button type="submit" class="{% if imovel.ativo %}btn-parar{% else %}btn-ativar{% endif %}">
+                                    {% if imovel.ativo %}
+                                    Parar
+                                    {% else %}
+                                    Ativar
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <form method="post" action="{{ url_for('admin_excluir_imovel', id=imovel.id) }}" style="display:inline;">
+                                <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este imóvel?');">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

@@ -318,10 +318,12 @@ def atualizar_imovel(id):
 @login_required
 def excluir_imovel(id):
     db = get_db()
+    # Só permite exclusão se o imóvel pertence ao usuário logado
     db.execute('DELETE FROM imoveis WHERE id = ? AND usuario_id = ?',
                (id, session['usuario_id']))
     db.commit()
     return redirect(url_for('meus_imoveis'))
+
 
 
 @app.route('/parar_anuncio/<int:id>', methods=['POST'])
@@ -366,14 +368,25 @@ def admin():
 
     # Total de usuários
     usuarios = db.execute(
-        'SELECT id, nome, email, telefone, tipo_usuario FROM usuarios').fetchall()
+        'SELECT id, nome, email, telefone, tipo_usuario FROM usuarios'
+    ).fetchall()
     total_usuarios = len(usuarios)
 
-    # Contagem de imóveis
+    # Total de imóveis, ativos e inativos
     total_imoveis = db.execute('SELECT COUNT(*) FROM imoveis').fetchone()[0]
     ativos = db.execute(
-        'SELECT COUNT(*) FROM imoveis WHERE ativo = 1').fetchone()[0]
+        'SELECT COUNT(*) FROM imoveis WHERE ativo = 1'
+    ).fetchone()[0]
     inativos = total_imoveis - ativos
+
+    # Lista completa de imóveis com nome do dono
+    imoveis = db.execute(
+        '''
+        SELECT imoveis.*, usuarios.nome AS dono_nome
+        FROM imoveis
+        JOIN usuarios ON imoveis.usuario_id = usuarios.id
+        '''
+    ).fetchall()
 
     return render_template(
         'admin.html',
@@ -382,8 +395,45 @@ def admin():
         total_imoveis=total_imoveis,
         ativos=ativos,
         inativos=inativos,
-        acessos=app.acessos
+        acessos=app.acessos,
+        imoveis=imoveis  # <-- adicionando imóveis ao template
     )
+
+
+@app.route('/admin/parar_anuncio/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def admin_parar_anuncio(id):
+    db = get_db()
+    # Admin pode parar qualquer anúncio, sem restrição de usuário
+    db.execute('UPDATE imoveis SET ativo = 0 WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/admin/toggle_anuncio/<int:id>', methods=['POST'])
+@login_required
+def admin_toggle_anuncio(id):
+    db = get_db()
+    imovel = db.execute('SELECT ativo FROM imoveis WHERE id = ?', (id,)).fetchone()
+
+    if imovel is None:
+        flash('Imóvel não encontrado.')
+        return redirect(url_for('admin'))
+
+    novo_status = 0 if imovel['ativo'] else 1
+    db.execute('UPDATE imoveis SET ativo = ? WHERE id = ?', (novo_status, id))
+    db.commit()
+    return redirect(url_for('admin'))
+
+@app.route('/admin/excluir_imovel/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def admin_excluir_imovel(id):
+    db = get_db()
+    # Admin pode excluir qualquer imóvel, sem restrição de usuário
+    db.execute('DELETE FROM imoveis WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('admin'))
 
 
 @app.route('/admin/excluir_usuario/<int:id>', methods=['POST'])
