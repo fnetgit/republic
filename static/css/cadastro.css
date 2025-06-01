@@ -101,24 +101,24 @@
     font-size: 14px;
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;  /* evita quebrar para a linha de baixo */
+    flex-wrap: nowrap;
     gap: 5px;
 }
 
 .termos input {
-    margin: 0; /* remove espaço extra */
+    margin: 0;
 }
 
 .termos a {
-    white-space: nowrap; /* impede quebra no link */
+    white-space: nowrap;
 }
 
 .cadastro-footer {
     max-width: 480px;
     display: flex;
-    justify-content: center; /* centraliza se quiser */
+    justify-content: center;
     padding-top: 10px;
-    
+
 }
 
 /* Botão */
@@ -156,11 +156,8 @@
     transition: all 0.3s ease;
     font-weight: 600;
     display: inline-flex;
-    /* Usando flexbox para garantir que o conteúdo ocupe o espaço adequado */
     align-items: center;
-    /* Alinha o texto verticalmente */
     justify-content: center;
-    /* Centraliza o texto dentro do botão */
 }
 
 /* Ocultando o botão de rádio */
@@ -171,19 +168,14 @@
 /* Estilo quando o botão está selecionado */
 .tipo-usuario-container input[type="radio"]:checked+span {
     background-color: #4CAF50;
-    /* Cor de fundo verde quando selecionado */
     color: white;
-    /* Texto branco */
     border-color: #4CAF50;
-    /* Borda verde quando selecionado */
 }
 
 /* Estilo para o span dentro do label */
 .tipo-usuario-container label span {
     display: inline-block;
-    /* Faz com que o span ocupe o espaço do botão */
     width: 100%;
-    /* Faz com que o botão ocupe todo o espaço disponível */
 }
 
 /* Estilo de hover para o botão */
@@ -194,9 +186,6 @@
 /* Estilo para o botão selecionado - Para destacar o botão clicado */
 .tipo-usuario-container input[type="radio"]:checked+span {
     background-color: #4CAF50;
-    /* Fundo verde */
     color: white;
-    /* Texto branco */
     border-color: #4CAF50;
-    /* Borda verde */
 }

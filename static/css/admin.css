@@ -67,21 +67,21 @@ th {
 
 /* Seção dos imóveis com scroll se necessário */
 .admin-section:nth-of-type(2) {
-    max-height: 500px; /* ajuste conforme quiser */
+    max-height: 500px;
     overflow-y: auto;
-    padding-right: 10px; /* evitar corte do conteúdo pela scrollbar */
+    padding-right: 10px;
 }
 
 /* Cartão de imóvel (se usar) */
 .imovel-card {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* alinha botão no topo */
+    align-items: flex-start;
     background-color: #f5f5f5;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .imovel-info {

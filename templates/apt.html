@@ -34,7 +34,7 @@
     <div class="anunciante" style="display: flex; align-items: center; gap: 10px;">
       <span>Anunciante: {{ dono_nome }}</span>
       {% if usuario_logado == apartamento.usuario_id %}
-      <form action="{{ url_for('properties.parar_anuncio', id=apartamento.id) }}" method="POST" class="inline-form"> {# CORRIGIDO #}
+      <form action="{{ url_for('properties.parar_anuncio', id=apartamento.id) }}" method="POST" class="inline-form">
         <button type="submit" class="btn btn-danger">Parar Anúncio</button>
       </form>
       {% endif %}
@@ -61,13 +61,14 @@
     <div class="price-action">
       <span class="price">R$ {{ apartamento.valor }} / mês</span>
       {% if telefone_dono %}
-    {% set telefone_formatado = telefone_dono|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') %}
-    <a href="https://wa.me/55{{ telefone_formatado }}?text=Olá!%20Tenho%20interesse%20em%20reservar%20a%20estadia." target="_blank">
+      {% set telefone_formatado = telefone_dono|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') %}
+      <a href="https://wa.me/55{{ telefone_formatado }}?text=Olá!%20Tenho%20interesse%20em%20reservar%20a%20estadia."
+        target="_blank">
         <button class="btn">Reservar estadia</button>
-    </a>
-    {% else %}
-    <button class="btn" disabled>WhatsApp indisponível</button>
-    {% endif %}
+      </a>
+      {% else %}
+      <button class="btn" disabled>WhatsApp indisponível</button>
+      {% endif %}
     </div>
   </section>
 

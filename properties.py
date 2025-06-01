@@ -5,12 +5,14 @@ from werkzeug.utils import secure_filename
 import os
 import json
 from database import get_db
-from auth import login_required # Importa o decorador de login
+from auth import login_required  # Importa o decorador de login
 
 # Cria um Blueprint para as rotas de gerenciamento de imóveis
 bp = Blueprint('properties', __name__, url_prefix='/')
 
 # ----- ROTAS DE PÁGINAS DE IMÓVEIS -----
+
+
 @bp.route('/pesquisa')
 def pesquisa():
     """
@@ -37,6 +39,7 @@ def pesquisa():
         })
     return render_template('pesquisa.html', imoveis=imoveis)
 
+
 @bp.route('/detalhes_imovel/<int:id>')
 def detalhes_imovel(id):
     """
@@ -54,11 +57,13 @@ def detalhes_imovel(id):
 
     if not r:
         flash('Imóvel não encontrado.', 'danger')
-        return redirect(url_for('properties.pesquisa')) # Redireciona para pesquisa se não encontrar
+        # Redireciona para pesquisa se não encontrar
+        return redirect(url_for('properties.pesquisa'))
 
     apt = dict(r)
     apt['inclusos'] = apt['inclusos'].split(',') if apt['inclusos'] else []
-    apt['imagens'] = apt['imagem'].split(',') if apt['imagem'] else ['default.jpg']
+    apt['imagens'] = apt['imagem'].split(
+        ',') if apt['imagem'] else ['default.jpg']
 
     return render_template(
         'apt.html',
@@ -69,6 +74,8 @@ def detalhes_imovel(id):
     )
 
 # ----- GERENCIAMENTO DE IMÓVEIS (ANUNCIANTES) -----
+
+
 @bp.route('/cadastro_imovel', methods=['GET', 'POST'])
 @login_required
 def cadastro_imovel():
@@ -82,7 +89,7 @@ def cadastro_imovel():
                       (user_id,)).fetchone()[0]
     if tipo != 'anunciante':
         flash('Apenas anunciantes podem cadastrar imóveis.', 'warning')
-        return redirect(url_for('index')) # Redireciona para a página inicial
+        return redirect(url_for('index'))  # Redireciona para a página inicial
 
     if request.method == 'POST':
         data = request.form.to_dict()
@@ -96,7 +103,7 @@ def cadastro_imovel():
                 f.save(path)
                 nomes.append(fn)
         if not nomes:
-            nomes = ['default.jpg'] # Imagem padrão se nenhuma for enviada
+            nomes = ['default.jpg']  # Imagem padrão se nenhuma for enviada
 
         try:
             db.execute(
@@ -105,9 +112,11 @@ def cadastro_imovel():
                                         outros, descricao, imagem, tipo, usuario_id)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                 (*[data.get(k) for k in ['endereco', 'bairro', 'numero', 'cep', 'complemento']],
-                 float(data['valor'].replace(',', '.')), # Converte valor para float
+                 # Converte valor para float
+                 float(data['valor'].replace(',', '.')),
                  int(data['quartos']), int(data['banheiros']),
-                 ','.join(inclusos), data.get('outros', ''), data.get('descricao', ''),
+                 ','.join(inclusos), data.get(
+                     'outros', ''), data.get('descricao', ''),
                  ','.join(nomes), data['tipo'], user_id)
             )
             db.commit()
@@ -115,8 +124,10 @@ def cadastro_imovel():
             return redirect(url_for('properties.meus_imoveis'))
         except Exception as e:
             flash(f'Erro ao cadastrar imóvel: {e}', 'danger')
-            current_app.logger.error(f"Erro ao cadastrar imóvel: {e}") # Loga o erro
+            current_app.logger.error(
+                f"Erro ao cadastrar imóvel: {e}")  # Loga o erro
     return render_template('cadastro_imovel.html')
+
 
 @bp.route('/meus_imoveis')
 @login_required
@@ -130,6 +141,7 @@ def meus_imoveis():
         (session['usuario_id'],)
     ).fetchall()
     return render_template('meus_imoveis.html', imoveis=rows)
+
 
 @bp.route('/editar_imovel/<int:id>', methods=['GET'])
 @login_required
@@ -146,6 +158,7 @@ def editar_imovel(id):
         flash('Imóvel não encontrado ou você não tem permissão para editá-lo.', 'danger')
         return redirect(url_for('properties.meus_imoveis'))
     return render_template('editar_imovel.html', id=id, valor=apt['valor'], descricao=apt['descricao'])
+
 
 @bp.route('/excluir_imovel/<int:id>', methods=['POST'])
 @login_required
@@ -164,6 +177,7 @@ def excluir_imovel(id):
         flash('Imóvel não encontrado ou você não tem permissão para excluí-lo.', 'danger')
     return redirect(url_for('properties.meus_imoveis'))
 
+
 @bp.route('/parar_anuncio/<int:id>', methods=['POST'])
 @login_required
 def parar_anuncio(id):
@@ -179,6 +193,7 @@ def parar_anuncio(id):
     else:
         flash('Imóvel não encontrado ou você não tem permissão para desativá-lo.', 'danger')
     return redirect(url_for('properties.meus_imoveis'))
+
 
 @bp.route('/ativar_anuncio/<int:id>', methods=['POST'])
 @login_required
@@ -197,6 +212,8 @@ def ativar_anuncio(id):
     return redirect(url_for('properties.meus_imoveis'))
 
 # ----- ROTAS API JSON -----
+
+
 @bp.route('/api/imovel/<int:id>')
 @login_required
 def api_get_imovel(id):
@@ -228,6 +245,7 @@ def api_get_imovel(id):
         'fotos': imovel['imagem'].split(',') if imovel['imagem'] else []
     })
 
+
 @bp.route('/api/imoveis/<int:id>', methods=['PUT'])
 @login_required
 def atualizar_imovel(id):
@@ -236,7 +254,8 @@ def atualizar_imovel(id):
     Requer que o usuário esteja logado e seja o proprietário do imóvel.
     Recebe os dados em formato JSON.
     """
-    dados_json = request.form.get('dados') # Assumindo que os dados JSON vêm em um campo 'dados'
+    dados_json = request.form.get(
+        'dados')  # Assumindo que os dados JSON vêm em um campo 'dados'
     if not dados_json:
         return jsonify({'erro': 'Dados inválidos ou ausentes'}), 400
     try:
@@ -271,4 +290,3 @@ def atualizar_imovel(id):
         return jsonify({'mensagem': 'Imóvel atualizado com sucesso!'}), 200
     else:
         return jsonify({'erro': 'Imóvel não encontrado ou não autorizado'}), 404
-

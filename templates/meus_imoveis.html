@@ -23,19 +23,22 @@
 
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                     <a href="{{ url_for('properties.detalhes_imovel', id=apt[0]) }}" class="btn-link">Ver detalhes</a>
-                    <a href="{{ url_for('properties.editar_imovel', id=apt[0]) }}" class="btn-link">Editar</a> {# CORRIGIDO #}
+                    <a href="{{ url_for('properties.editar_imovel', id=apt[0]) }}" class="btn-link">Editar</a>
 
                     {% if apt[6] == 1 %}
-                    <form action="{{ url_for('properties.parar_anuncio', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
+                    <form action="{{ url_for('properties.parar_anuncio', id=apt[0]) }}" method="post"
+                        style="display:inline;">
                         <button type="submit" class="btn-link">Parar Anúncio</button>
                     </form>
                     {% else %}
-                    <form action="{{ url_for('properties.ativar_anuncio', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
+                    <form action="{{ url_for('properties.ativar_anuncio', id=apt[0]) }}" method="post"
+                        style="display:inline;">
                         <button type="submit" class="btn-link">Voltar a Anunciar</button>
                     </form>
                     {% endif %}
 
-                    <form action="{{ url_for('properties.excluir_imovel', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
+                    <form action="{{ url_for('properties.excluir_imovel', id=apt[0]) }}" method="post"
+                        style="display:inline;">
                         <button type="submit" onclick="return confirm('Tem certeza?')"
                             class="btn-link delete">Excluir</button>
                     </form>

@@ -3,6 +3,7 @@ import os
 
 DATABASE = 'instance/banco.db'
 
+
 def inserir_admin():
     os.makedirs(os.path.dirname(DATABASE), exist_ok=True)
     db = sqlite3.connect(DATABASE)
@@ -14,7 +15,7 @@ def inserir_admin():
     db.commit()
     db.close()
 
+
 if __name__ == '__main__':
     inserir_admin()
     print("Usuário admin criado ou já existia.")
-

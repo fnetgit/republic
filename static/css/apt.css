@@ -28,9 +28,7 @@
 .image-gallery.side-by-side .main-img img {
     width: 600px;
     height: 400px;
-    /* ou o valor que você preferir */
     object-fit: cover;
-    /* garante que a imagem preencha o espaço sem distorcer */
     border-radius: 12px;
 }
 
@@ -131,32 +129,32 @@
 }
 
 .anunciante {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 
 .btn-link {
-        background-color: #004080;
-        color: white;
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+    background-color: #004080;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-    .btn-link:hover {
-        background-color: #0066cc;
-    }
+.btn-link:hover {
+    background-color: #0066cc;
+}
 
-    .btn-link.delete {
-        background-color: #a60000;
-    }
+.btn-link.delete {
+    background-color: #a60000;
+}
 
-    .btn-link.delete:hover {
-        background-color: #d10000;
-    }
+.btn-link.delete:hover {
+    background-color: #d10000;
+}

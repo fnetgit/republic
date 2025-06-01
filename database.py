@@ -4,6 +4,7 @@ import sqlite3
 import os
 from flask import g, current_app
 
+
 def get_db():
     """
     Obtém uma conexão com o banco de dados SQLite.
@@ -12,10 +13,12 @@ def get_db():
     """
     if 'db' not in g:
         # Garante que o diretório do banco de dados exista
-        os.makedirs(os.path.dirname(current_app.config['DATABASE']), exist_ok=True)
+        os.makedirs(os.path.dirname(
+            current_app.config['DATABASE']), exist_ok=True)
         g.db = sqlite3.connect(current_app.config['DATABASE'])
-        g.db.row_factory = sqlite3.Row # Permite acessar colunas por nome
+        g.db.row_factory = sqlite3.Row  # Permite acessar colunas por nome
     return g.db
+
 
 def close_db(e=None):
     """
@@ -24,6 +27,7 @@ def close_db(e=None):
     db = g.pop('db', None)
     if db is not None:
         db.close()
+
 
 def inicializar_banco():
     """
@@ -58,4 +62,4 @@ def inicializar_banco():
         )
     ''')
     db.commit()
-    close_db() # Fecha a conexão após a inicialização
+    close_db()  # Fecha a conexão após a inicialização

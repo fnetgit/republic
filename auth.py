@@ -3,12 +3,14 @@
 from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, session, g, flash
 import sqlite3
-from database import get_db # Importa a função get_db do novo módulo
+from database import get_db  # Importa a função get_db do novo módulo
 
 # Cria um Blueprint para as rotas de autenticação
 bp = Blueprint('auth', __name__, url_prefix='/')
 
 # ----- DECORATOR LOGIN -----
+
+
 def login_required(f):
     """
     Decorador que verifica se o usuário está logado.
@@ -18,11 +20,14 @@ def login_required(f):
     def wrapped(*args, **kwargs):
         if 'usuario_id' not in session:
             flash('Você precisa estar logado para acessar esta página.', 'info')
-            return redirect(url_for('auth.login')) # Redireciona para a rota de login do blueprint
+            # Redireciona para a rota de login do blueprint
+            return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
     return wrapped
 
 # ----- CONTEXTO GLOBAL (mantido aqui para o exemplo, mas pode ser movido para app.py se for global para toda a aplicação) -----
+
+
 @bp.context_processor
 def inject_usuario():
     """
@@ -42,6 +47,8 @@ def inject_usuario():
     return dict(usuario_nome=usuario_nome, tipo_usuario=tipo_usuario)
 
 # ----- ROTAS DE AUTENTICAÇÃO E CADASTRO -----
+
+
 @bp.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     """
@@ -62,10 +69,12 @@ def cadastro():
             )
             db.commit()
             flash('Cadastro realizado com sucesso! Faça login para continuar.', 'success')
-            return redirect(url_for('auth.login')) # Redireciona para a página de login após o cadastro
+            # Redireciona para a página de login após o cadastro
+            return redirect(url_for('auth.login'))
         except sqlite3.IntegrityError:
             flash('Email já cadastrado. Tente outro email ou faça login.', 'danger')
     return render_template('cadastro.html')
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,14 +87,17 @@ def login():
         senha = request.form['senha']
         db = get_db()
         user = db.execute(
-            'SELECT id FROM usuarios WHERE email = ? AND senha = ?', (email, senha)
+            'SELECT id FROM usuarios WHERE email = ? AND senha = ?', (
+                email, senha)
         ).fetchone()
         if user:
             session['usuario_id'] = user['id']
             flash('Login realizado com sucesso!', 'success')
-            return redirect(url_for('index')) # Redireciona para a página inicial
+            # Redireciona para a página inicial
+            return redirect(url_for('index'))
         flash('Email ou senha inválidos!', 'danger')
     return render_template('cadastro.html')
+
 
 @bp.route('/logout')
 @login_required

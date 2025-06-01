@@ -17,42 +17,41 @@
             </a>
         </div>
         <nav class="nav">
-    <a href="{{ url_for('index') }}">Home</a>
-    <a href="{{ url_for('sobre') }}">Sobre</a>
-    <a href="{{ url_for('properties.pesquisa') }}">Encontrar imóvel</a>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('sobre') }}">Sobre</a>
+            <a href="{{ url_for('properties.pesquisa') }}">Encontrar imóvel</a>
 
-    {% if tipo_usuario == 'anunciante' %}
-        <a href="{{ url_for('properties.cadastro_imovel') }}">Anunciar</a> {# CORRIGIDO #}
-        <a href="{{ url_for('properties.meus_imoveis') }}">Meus anúncios</a> {# CORRIGIDO #}
-    {% endif %}
+            {% if tipo_usuario == 'anunciante' %}
+            <a href="{{ url_for('properties.cadastro_imovel') }}">Anunciar</a>
+            <a href="{{ url_for('properties.meus_imoveis') }}">Meus anúncios</a>
+            {% endif %}
 
-    {% if tipo_usuario == 'admin' %}
-        <a href="{{ url_for('admin.admin') }}">Admin</a> {# CORRIGIDO #}
-    {% endif %}
+            {% if tipo_usuario == 'admin' %}
+            <a href="{{ url_for('admin.admin') }}">Admin</a>
+            {% endif %}
 
-    {% if usuario_nome %}
-    <div class="user-info">
-        <div class="separator">|</div>
-        <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-        <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a> {# CORRIGIDO #}
-    </div>
-    {% else %}
-    <a href="{{ url_for('auth.cadastro') }}">Login / Cadastro</a> {# CORRIGIDO (removido o ponto inicial) #}
-    {% endif %}
-</nav>
+            {% if usuario_nome %}
+            <div class="user-info">
+                <div class="separator">|</div>
+                <span class="saudacao">Olá, {{ usuario_nome }}!</span>
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a>
+            </div>
+            {% else %}
+            <a href="{{ url_for('auth.cadastro') }}">Login / Cadastro</a>
+            {% endif %}
+        </nav>
 
     </header>
 
     <main>
-        {# Adicionado para exibir as mensagens flash #}
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <ul class="flashes">
+        {% if messages %}
+        <ul class="flashes">
             {% for category, message in messages %}
-              <li class="{{ category }}">{{ message }}</li>
+            <li class="{{ category }}">{{ message }}</li>
             {% endfor %}
-            </ul>
-          {% endif %}
+        </ul>
+        {% endif %}
         {% endwith %}
 
         {% block content %}{% endblock %}

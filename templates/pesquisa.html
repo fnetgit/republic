@@ -22,26 +22,25 @@
             <a href="{{ url_for('properties.pesquisa') }}">Encontrar imóvel</a>
 
             {% if tipo_usuario == 'anunciante' %}
-            <a href="{{ url_for('properties.cadastro_imovel') }}">Anunciar</a> {# CORRIGIDO: Adicionado 'properties.' #}
+            <a href="{{ url_for('properties.cadastro_imovel') }}">Anunciar</a>
             {% endif %}
 
             {% if tipo_usuario == 'anunciante' %}
-            <a href="{{ url_for('properties.meus_imoveis') }}">Meus anúncios</a> {# CORRIGIDO: Adicionado 'properties.' #}
+            <a href="{{ url_for('properties.meus_imoveis') }}">Meus anúncios</a>
             {% endif %}
-            
-            {# Se você tiver o link para o admin aqui, corrija assim: #}
+
             {% if tipo_usuario == 'admin' %}
-            <a href="{{ url_for('admin.admin') }}">Admin</a> {# CORRIGIDO: Adicionado 'admin.' #}
+            <a href="{{ url_for('admin.admin') }}">Admin</a>
             {% endif %}
 
             {% if usuario_nome %}
             <div class="user-info">
                 <div class="separator">|</div>
                 <span class="saudacao">Olá, {{ usuario_nome }}!</span>
-                <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a> {# CORRIGIDO: Adicionado 'auth.' #}
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a>
             </div>
             {% else %}
-            <a href="{{ url_for('auth.cadastro') }}">Login / Cadastro</a> {# CORRIGIDO: Adicionado 'auth.' (e removido ponto inicial se existisse) #}
+            <a href="{{ url_for('auth.cadastro') }}">Login / Cadastro</a>
             {% endif %}
         </nav>
     </header>
@@ -93,8 +92,7 @@
                 <div class="card-footer">
                     <p class="preco">R$ {{ "%.2f"|format(apt.valor|float) }}</p>
                     <div class="botao">
-                        {# Detalhes do imóvel é uma rota no Blueprint 'properties' #}
-                        <a href="{{ url_for('properties.detalhes_imovel', id=apt.id) }}">Saiba mais</a> {# CORRIGIDO #}
+                        <a href="{{ url_for('properties.detalhes_imovel', id=apt.id) }}">Saiba mais</a>
                     </div>
                 </div>
             </div>

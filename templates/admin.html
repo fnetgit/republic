@@ -41,8 +41,10 @@
                     <td>{{ u.tipo_usuario }}</td>
                     <td>
                         {% if u.id != session.usuario_id %}
-                        <form method="post" action="{{ url_for('admin.excluir_usuario', id=u.id) }}" style="display:inline;"> {# CORRIGIDO #}
-                            <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">Excluir</button>
+                        <form method="post" action="{{ url_for('admin.excluir_usuario', id=u.id) }}"
+                            style="display:inline;">
+                            <button type="submit" class="btn-excluir"
+                                onclick="return confirm('Tem certeza que deseja excluir este usuário?');">Excluir</button>
                         </form>
                         {% else %}
                         <em>Não pode excluir</em>
@@ -53,7 +55,7 @@
             </tbody>
         </table>
     </div>
-
+    
     <div class="admin-section">
         <h2>Lista de Imóveis</h2>
         <table>
@@ -79,8 +81,10 @@
                     <td>{{ 'Ativo' if imovel.ativo else 'Inativo' }}</td>
                     <td>
                         <div class="btn-group">
-                            <form method="post" action="{{ url_for('admin.admin_toggle_anuncio', id=imovel.id) }}" style="display:inline;"> {# CORRIGIDO #}
-                                <button type="submit" class="{% if imovel.ativo %}btn-parar{% else %}btn-ativar{% endif %}">
+                            <form method="post" action="{{ url_for('admin.admin_toggle_anuncio', id=imovel.id) }}"
+                                style="display:inline;">
+                                <button type="submit"
+                                    class="{% if imovel.ativo %}btn-parar{% else %}btn-ativar{% endif %}">
                                     {% if imovel.ativo %}
                                     Parar
                                     {% else %}
@@ -88,8 +92,10 @@
                                     {% endif %}
                                 </button>
                             </form>
-                            <form method="post" action="{{ url_for('admin.admin_excluir_imovel', id=imovel.id) }}" style="display:inline;"> {# CORRIGIDO #}
-                                <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este imóvel?');">Excluir</button>
+                            <form method="post" action="{{ url_for('admin.admin_excluir_imovel', id=imovel.id) }}"
+                                style="display:inline;">
+                                <button type="submit" class="btn-excluir"
+                                    onclick="return confirm('Tem certeza que deseja excluir este imóvel?');">Excluir</button>
                             </form>
                         </div>
                     </td>

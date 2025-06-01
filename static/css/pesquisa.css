@@ -66,7 +66,6 @@ main {
 .card-footer {
   display: flex;
   justify-content: space-between;
-  /* Espaço entre o preço e o botão */
   align-items: center;
   margin-top: 20px;
   width: 100%;
@@ -77,19 +76,15 @@ main {
   font-weight: bold;
   font-size: 1.2em;
   text-align: left;
-  /* Alinha o preço à esquerda */
   flex: 1;
-  /* Faz com que o preço ocupe o máximo de espaço disponível */
 }
 
 .botao {
   text-align: right;
-  /* Alinha o botão à direita */
 }
 
 .botao a {
   background-color: black;
-  /* Cor de fundo preta */
   color: white;
   padding: 8px 15px;
   text-decoration: none;
@@ -98,7 +93,6 @@ main {
 
 .botao a:hover {
   background-color: #333;
-  /* Cor do fundo ao passar o mouse */
 }
 
 
