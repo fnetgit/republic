@@ -31,6 +31,9 @@ td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
+    white-space: nowrap; /* Evita que o texto quebre, mantendo a linha única */
+    overflow: hidden;    /* Esconde o texto que excede */
+    text-overflow: ellipsis; /* Adiciona '...' para texto excedente */
 }
 
 th {
@@ -45,34 +48,36 @@ th {
     padding: 1rem;
     border-radius: 6px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    max-width: 1200px; /* Para alinhar com o container principal */
+    margin: 20px auto; /* Centraliza */
 }
 
-.stats div {
-    margin: 10px 0;
-    font-size: 1.1rem;
-}
-
-/* Container principal */
+/* Container principal (APENAS PARA EMPILHAR AS SEÇÕES) */
 .admin-container {
     display: flex;
-    gap: 40px;
-    margin-top: 30px;
-    flex-wrap: wrap;
+    flex-direction: column; /* Faz com que as seções filhas (.admin-section) se empilhem verticalmente */
+    gap: 30px; /* Espaço entre as seções empilhadas */
+    max-width: 1200px; /* Largura máxima para o painel */
+    margin: 20px auto; /* Centraliza o painel na tela */
+    padding: 20px;
 }
+
 
 .admin-section {
-    flex: 1;
-    min-width: 400px;
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    width: 100%; /* Ocupa toda a largura disponível no contêiner pai (admin-container) */
+    max-height: 400px; /* Altura máxima da seção antes de adicionar scroll (ajuste conforme necessário) */
+    overflow-y: auto; /* Adiciona scroll vertical se o conteúdo exceder a altura */
+    padding-right: 10px; /* Adiciona um pouco de padding para o scrollbar não cobrir o conteúdo */
 }
 
-/* Seção dos imóveis com scroll se necessário */
-.admin-section:nth-of-type(2) {
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
 
-/* Cartão de imóvel (se usar) */
+
+/* Cartão de imóvel*/
 .imovel-card {
     display: flex;
     justify-content: space-between;
@@ -145,4 +150,30 @@ button {
 
 .btn-excluir:hover {
     background-color: #c0392b;
+}
+
+/* Botões de Aceitar/Negar */
+.btn-aceitar {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn-aceitar:hover {
+    background-color: #218838;
+}
+.btn-negar {
+    background-color: #ffc107; /* Amarelo */
+    color: #212529;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.btn-negar:hover {
+    background-color: #e0a800;
 }

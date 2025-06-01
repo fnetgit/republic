@@ -1,15 +1,14 @@
 # admin.py
 
 from functools import wraps
-from flask import Blueprint, render_template, redirect, url_for, session, flash
-from database import get_db  # Importa a função get_db
-from auth import login_required  # Importa o decorador de login
+from flask import Blueprint, render_template, redirect, url_for, session, flash, current_app
+from database import get_db # Importa a função get_db
+from auth import login_required # Importa o decorador de login
 
 # Cria um Blueprint para as rotas de administração
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # ----- DECORATOR ADMIN -----
-
 def admin_required(f):
     """
     Decorador que verifica se o usuário logado é um administrador.
@@ -31,7 +30,6 @@ def admin_required(f):
     return wrapped
 
 # ----- ROTAS DE ADMINISTRAÇÃO -----
-
 @bp.route('/')
 @login_required
 @admin_required
@@ -64,16 +62,12 @@ def admin():
         '''
     ).fetchall()
 
-    # Acessos (variável global da aplicação principal)
-    # Como 'app.acessos' é uma variável da instância da aplicação,
-    # precisaremos passá-la de alguma forma. Uma maneira simples é
-    # fazer com que o app.py passe essa informação para o template,
-    # ou acessar current_app.acessos (se definido no app.py)
-    # Por simplicidade, vou assumir que 'acessos' será passado para o template
-    # ou que current_app.acessos estará disponível.
-    # Para este exemplo, vou usar um valor fictício ou assumir que app.acessos
-    # será acessível via current_app.
-    from flask import current_app
+    # NOVO: Busca por solicitações de exclusão pendentes (solicitacao_exclusao = 1)
+    solicitacoes_pendentes = db.execute(
+        'SELECT id, nome, email, telefone FROM usuarios WHERE solicitacao_exclusao = 1'
+    ).fetchall()
+
+
     acessos = getattr(current_app, 'acessos', 0)
 
     return render_template(
@@ -84,20 +78,60 @@ def admin():
         ativos=ativos,
         inativos=inativos,
         acessos=acessos,
-        imoveis=imoveis
+        imoveis=imoveis,
+        solicitacoes_pendentes=solicitacoes_pendentes # NOVO: Passa as solicitações para o template
     )
 
+# NOVO: Rotas para gerenciar solicitações de exclusão de conta
+@bp.route('/aceitar_exclusao/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def aceitar_exclusao(user_id):
+    db = get_db()
+    
+    user = db.execute('SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
+    if not user or user['solicitacao_exclusao'] != 1:
+        flash('Solicitação de exclusão não encontrada ou não pendente.', 'warning')
+        return redirect(url_for('admin.admin'))
 
-@bp.route('/toggle_anuncio/<int:id>', methods=['POST'])
+    # ATENÇÃO: Ao aceitar a exclusão, todos os imóveis associados a este usuário serão DELETADOS.
+    # Se você quiser outra lógica (ex: manter imóveis sem dono, marcar como inativo), modifique aqui.
+    db.execute('DELETE FROM imoveis WHERE usuario_id = ?', (user_id,))
+    
+    db.execute('DELETE FROM usuarios WHERE id = ?', (user_id,))
+    db.commit()
+    
+    flash(f'Solicitação de exclusão para o usuário ID {user_id} aprovada e conta excluída.', 'success')
+    # TODO: Lógica para enviar e-mail de aprovação aqui.
+    return redirect(url_for('admin.admin'))
+
+@bp.route('/negar_exclusao/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def negar_exclusao(user_id):
+    db = get_db()
+    
+    user = db.execute('SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
+    if not user or user['solicitacao_exclusao'] != 1:
+        flash('Solicitação de exclusão não encontrada ou não pendente.', 'warning')
+        return redirect(url_for('admin.admin'))
+
+    # Define a solicitação de volta para 0 (não pendente)
+    db.execute(
+        'UPDATE usuarios SET solicitacao_exclusao = 0 WHERE id = ?',
+        (user_id,)
+    )
+    db.commit()
+    flash(f'Solicitação de exclusão para o usuário ID {user_id} negada.', 'info')
+    # TODO: Lógica para enviar e-mail de negação aqui.
+    return redirect(url_for('admin.admin'))
+
+@bp.route('/admin/toggle_anuncio/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def admin_toggle_anuncio(id):
-    """
-    Permite que o administrador ative/desative um anúncio de imóvel.
-    """
     db = get_db()
-    imovel = db.execute(
-        'SELECT ativo FROM imoveis WHERE id = ?', (id,)).fetchone()
+    imovel = db.execute('SELECT ativo FROM imoveis WHERE id = ?', (id,)).fetchone()
 
     if imovel is None:
         flash('Imóvel não encontrado.', 'danger')
@@ -106,18 +140,13 @@ def admin_toggle_anuncio(id):
     novo_status = 0 if imovel['ativo'] else 1
     db.execute('UPDATE imoveis SET ativo = ? WHERE id = ?', (novo_status, id))
     db.commit()
-    flash(
-        f'Status do anúncio alterado para {"ativo" if novo_status else "inativo"} com sucesso!', 'success')
+    flash(f'Status do anúncio alterado para {"ativo" if novo_status else "inativo"} com sucesso!', 'success')
     return redirect(url_for('admin.admin'))
 
-
-@bp.route('/excluir_imovel/<int:id>', methods=['POST'])
+@bp.route('/admin/excluir_imovel/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def admin_excluir_imovel(id):
-    """
-    Permite que o administrador exclua qualquer imóvel.
-    """
     db = get_db()
     cursor = db.execute('DELETE FROM imoveis WHERE id = ?', (id,))
     db.commit()
@@ -127,15 +156,10 @@ def admin_excluir_imovel(id):
         flash('Imóvel não encontrado.', 'danger')
     return redirect(url_for('admin.admin'))
 
-
-@bp.route('/excluir_usuario/<int:id>', methods=['POST'])
+@bp.route('/admin/excluir_usuario/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def excluir_usuario(id):
-    """
-    Permite que o administrador exclua qualquer usuário.
-    Impede que o administrador exclua a si mesmo.
-    """
     if id == session['usuario_id']:
         flash("Você não pode excluir seu próprio usuário.", 'warning')
         return redirect(url_for('admin.admin'))

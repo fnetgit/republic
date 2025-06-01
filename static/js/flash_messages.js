@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Faz a mensagem sumir automaticamente após 5 segundos
+            // Faz a mensagem sumir automaticamente após 3 segundos
             setTimeout(() => {
                 dismissMessage(message);
-            }, 3000); // 5000 milissegundos = 5 segundos
+            }, 3000); // 5000 milissegundos = 3 segundos
         });
     }
 

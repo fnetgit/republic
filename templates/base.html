@@ -32,8 +32,9 @@
             {% endif %}
 
             {% if usuario_nome %}
+            <a href="{{ url_for('auth.perfil') }}">Meu Perfil</a>
+            <div class="separator">|</div> 
             <div class="user-info">
-                <div class="separator">|</div>
                 <span class="saudacao">Olá, {{ usuario_nome }}!</span>
                 <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a>
             </div>
@@ -45,7 +46,6 @@
     </header>
 
     <main>
-        {# Contêiner para as mensagens flash pop-up #}
         <div class="flash-message-container">
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}

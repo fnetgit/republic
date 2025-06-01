@@ -109,3 +109,68 @@ def logout():
     session.pop('usuario_id', None)
     flash('Você foi desconectado.', 'info')
     return redirect(url_for('auth.login'))
+
+# auth.py (parte que será alterada/adicionada)
+
+# ... (imports existentes)
+# from functools import wraps
+# from flask import Blueprint, render_template, request, redirect, url_for, session, g, flash
+# import sqlite3
+# from database import get_db
+
+# ... (código existente até o final)
+
+# Adicione estas novas rotas ao final do arquivo auth.py
+
+@bp.route('/perfil', methods=['GET', 'POST'])
+@login_required
+def perfil():
+    db = get_db()
+    user_id = session['usuario_id']
+
+    if request.method == 'POST':
+        # Processa a atualização de dados
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = request.form['senha'] # Note: Senha não está hashada
+        telefone = request.form['telefone']
+        
+        try:
+            db.execute(
+                'UPDATE usuarios SET nome = ?, email = ?, senha = ?, telefone = ? WHERE id = ?',
+                (nome, email, senha, telefone, user_id)
+            )
+            db.commit()
+            flash('Suas informações foram atualizadas com sucesso!', 'success')
+            return redirect(url_for('auth.perfil'))
+        except sqlite3.IntegrityError:
+            flash('Este email já está cadastrado para outro usuário.', 'danger')
+        except Exception as e:
+            flash(f'Ocorreu um erro ao atualizar: {e}', 'danger')
+
+    # Busca os dados atuais do usuário para exibir no formulário
+    user = db.execute(
+        'SELECT id, nome, email, telefone, tipo_usuario, solicitacao_exclusao FROM usuarios WHERE id = ?',
+        (user_id,)
+    ).fetchone()
+
+    if not user:
+        flash('Usuário não encontrado.', 'danger')
+        return redirect(url_for('auth.login')) # Redireciona se o usuário sumir
+
+    return render_template('perfil.html', user=user)
+
+@bp.route('/solicitar_exclusao', methods=['POST'])
+@login_required
+def solicitar_exclusao():
+    db = get_db()
+    user_id = session['usuario_id']
+
+    # Atualiza o status da solicitação para pendente (1)
+    db.execute(
+        'UPDATE usuarios SET solicitacao_exclusao = 1 WHERE id = ?',
+        (user_id,)
+    )
+    db.commit()
+    flash('Sua solicitação de exclusão de conta foi enviada para aprovação.', 'info')
+    return redirect(url_for('auth.perfil'))
