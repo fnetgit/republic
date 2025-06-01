@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block title %}Meus Imóveis - Republic{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/apt.css') }}">
+{% endblock %}
 
 {% block content %}
 <h1 style="text-align: center; margin-top: 40px;">Meus Imóveis Anunciados</h1>
@@ -19,20 +22,20 @@
                 <p style="margin: 0 0 10px;">Valor: <strong>R$ {{ apt[3] }}</strong></p>
 
                 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <a href="{{ url_for('detalhes_imovel', id=apt[0]) }}" class="btn-link">Ver detalhes</a>
-                    <a href="{{ url_for('editar_imovel', id=apt[0]) }}" class="btn-link">Editar</a>
+                    <a href="{{ url_for('properties.detalhes_imovel', id=apt[0]) }}" class="btn-link">Ver detalhes</a>
+                    <a href="{{ url_for('properties.editar_imovel', id=apt[0]) }}" class="btn-link">Editar</a> {# CORRIGIDO #}
 
                     {% if apt[6] == 1 %}
-                    <form action="{{ url_for('parar_anuncio', id=apt[0]) }}" method="post" style="display:inline;">
+                    <form action="{{ url_for('properties.parar_anuncio', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
                         <button type="submit" class="btn-link">Parar Anúncio</button>
                     </form>
                     {% else %}
-                    <form action="{{ url_for('ativar_anuncio', id=apt[0]) }}" method="post" style="display:inline;">
+                    <form action="{{ url_for('properties.ativar_anuncio', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
                         <button type="submit" class="btn-link">Voltar a Anunciar</button>
                     </form>
                     {% endif %}
 
-                    <form action="{{ url_for('excluir_imovel', id=apt[0]) }}" method="post" style="display:inline;">
+                    <form action="{{ url_for('properties.excluir_imovel', id=apt[0]) }}" method="post" style="display:inline;"> {# CORRIGIDO #}
                         <button type="submit" onclick="return confirm('Tem certeza?')"
                             class="btn-link delete">Excluir</button>
                     </form>
@@ -46,29 +49,5 @@
     {% endif %}
 </main>
 
-<style>
-    .btn-link {
-        background-color: #004080;
-        color: white;
-        padding: 6px 12px;
-        border: none;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
 
-    .btn-link:hover {
-        background-color: #0066cc;
-    }
-
-    .btn-link.delete {
-        background-color: #a60000;
-    }
-
-    .btn-link.delete:hover {
-        background-color: #d10000;
-    }
-</style>
 {% endblock %}

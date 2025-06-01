@@ -9,7 +9,7 @@
 {% block content %}
 <main class="container_imovel">
     <h1>INFORMAÇÕES DO IMÓVEL</h1>
-    <form class="form-container" method="POST" action="{{ url_for('cadastro_imovel') }}" enctype="multipart/form-data">
+    <form class="form-container" method="POST" action="{{ url_for('properties.cadastro_imovel') }}" enctype="multipart/form-data">
         <div class="form-left">
             <label for="tipo">Tipo do imóvel</label>
             <select name="tipo" id="tipo" required>
