@@ -135,7 +135,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cards = document.querySelectorAll('.card');
 
     // Filtros
-    const valorRadios = document.querySelectorAll('input[name="valor"]');
+    const minValue = parseFloat(document.getElementById('minValor').value) || 0;
+    const maxValue = parseFloat(document.getElementById('maxValor').value) || Infinity;
     const tipoCheckboxes = document.querySelectorAll('input[name="tipo"]');
     const quartosCheckboxes = document.querySelectorAll('input[name="quartos"]');
     const extrasCheckboxes = document.querySelectorAll('input[name="extras"]');
@@ -162,16 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const endereco = card.dataset.endereco.toLowerCase();
 
             // Filtro de valor
-            let passaValor = false;
-            if (valorSelecionado === 'todos') {
-                passaValor = true;
-            } else if (valorSelecionado === '500') {
-                passaValor = valor <= 500;
-            } else if (valorSelecionado === '1000') {
-                passaValor = valor <= 1000;
-            } else if (valorSelecionado === 'acima') {
-                passaValor = valor > 1000;
-            }
+            let passaValor = (valor >= minValue && valor <= maxValue);
 
             // Filtro de tipo
             let passaTipo = tiposSelecionados.length === 0 || tiposSelecionados.includes(tipo);
@@ -198,7 +190,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Eventos
     searchInput.addEventListener('input', filtrarCards);
-    valorRadios.forEach(r => r.addEventListener('change', filtrarCards));
+    document.getElementById('minValue').addEventListener('input', filtrarCards);
+    document.getElementById('maxValue').addEventListener('input', filtrarCards);
     tipoCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
     quartosCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
     extrasCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
