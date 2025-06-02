@@ -31,9 +31,12 @@ td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
-    white-space: nowrap; /* Evita que o texto quebre, mantendo a linha única */
-    overflow: hidden;    /* Esconde o texto que excede */
-    text-overflow: ellipsis; /* Adiciona '...' para texto excedente */
+    white-space: nowrap;
+    /* Evita que o texto quebre, mantendo a linha única */
+    overflow: hidden;
+    /* Esconde o texto que excede */
+    text-overflow: ellipsis;
+    /* Adiciona '...' para texto excedente */
 }
 
 th {
@@ -44,16 +47,23 @@ th {
 /* Estatísticas */
 .stats-container {
     display: flex;
-    flex-wrap: wrap; /* Permite que os cards quebrem a linha */
-    gap: 20px; /* Espaço entre os cards */
-    justify-content: center; /* Centraliza os cards horizontalmente */
+    flex-wrap: wrap;
+    /* Permite que os cards quebrem a linha */
+    gap: 20px;
+    /* Espaço entre os cards */
+    justify-content: center;
+    /* Centraliza os cards horizontalmente */
     margin-bottom: 2rem;
-    max-width: 1200px; /* Alinha com o admin-container */
-    margin: 20px auto; /* Centraliza o container de stats */
-    padding: 10px; /* Padding interno para o container de stats */
-    background-color: #f8f9fa; /* Um fundo leve para o container */
+    max-width: 1200px;
+    /* Alinha com o admin-container */
+    margin: 20px auto;
+    /* Centraliza o container de stats */
+    padding: 10px;
+    /* Padding interno para o container de stats */
+    background-color: #f8f9fa;
+    /* Um fundo leve para o container */
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 /* Estilo individual para cada card de estatística */
@@ -64,9 +74,12 @@ th {
     padding: 15px 20px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    flex: 1; /* Permite que os cards cresçam */
-    min-width: 180px; /* Largura mínima para cada card */
-    max-width: 220px; /* Largura máxima para cada card, para não ficarem gigantes */
+    flex: 1;
+    /* Permite que os cards cresçam */
+    min-width: 180px;
+    /* Largura mínima para cada card */
+    max-width: 220px;
+    /* Largura máxima para cada card, para não ficarem gigantes */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -90,19 +103,26 @@ th {
 
 /* Estilo para o número da estatística */
 .card-number {
-    font-size: 2.2em; /* Tamanho maior */
-    color: #007bff; /* Cor principal, ajuste se quiser */
+    font-size: 2.2em;
+    /* Tamanho maior */
+    color: #007bff;
+    /* Cor principal, ajuste se quiser */
     font-weight: bold;
-    line-height: 1; /* Para centralizar verticalmente o número */
+    line-height: 1;
+    /* Para centralizar verticalmente o número */
 }
 
 /* Container principal (APENAS PARA EMPILHAR AS SEÇÕES) */
 .admin-container {
     display: flex;
-    flex-direction: column; /* Faz com que as seções filhas (.admin-section) se empilhem verticalmente */
-    gap: 30px; /* Espaço entre as seções empilhadas */
-    max-width: 1200px; /* Largura máxima para o painel */
-    margin: 20px auto; /* Centraliza o painel na tela */
+    flex-direction: column;
+    /* Faz com que as seções filhas (.admin-section) se empilhem verticalmente */
+    gap: 30px;
+    /* Espaço entre as seções empilhadas */
+    max-width: 1200px;
+    /* Largura máxima para o painel */
+    margin: 20px auto;
+    /* Centraliza o painel na tela */
     padding: 20px;
 }
 
@@ -112,11 +132,15 @@ th {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    width: 100%; /* Ocupa toda a largura disponível no contêiner pai (admin-container) */
-    max-height: 400px; /* Altura máxima da seção antes de adicionar scroll (ajuste conforme necessário) */
-    overflow-y: auto; /* Adiciona scroll vertical se o conteúdo exceder a altura */
-    padding-right: 10px; /* Adiciona um pouco de padding para o scrollbar não cobrir o conteúdo */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    /* Ocupa toda a largura disponível no contêiner pai (admin-container) */
+    max-height: 400px;
+    /* Altura máxima da seção antes de adicionar scroll (ajuste conforme necessário) */
+    overflow-y: auto;
+    /* Adiciona scroll vertical se o conteúdo exceder a altura */
+    padding-right: 10px;
+    /* Adiciona um pouco de padding para o scrollbar não cobrir o conteúdo */
 }
 
 
@@ -198,7 +222,8 @@ button {
 
 /* Botões de Aceitar/Negar */
 .btn-aceitar {
-    background-color: #28a745; /* Verde */
+    background-color: #28a745;
+    /* Verde */
     color: white;
     padding: 8px 12px;
     border: none;
@@ -206,11 +231,14 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .btn-aceitar:hover {
     background-color: #218838;
 }
+
 .btn-negar {
-    background-color: #ffc107; /* Amarelo */
+    background-color: #ffc107;
+    /* Amarelo */
     color: #212529;
     padding: 8px 12px;
     border: none;
@@ -218,6 +246,7 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .btn-negar:hover {
     background-color: #e0a800;
 }

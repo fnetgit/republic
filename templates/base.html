@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Republic{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/flash_messages.css') }}"> {# Importa o CSS para as mensagens flash #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flash_messages.css') }}"> {# Importa o CSS para as
+    mensagens flash #}
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -33,7 +34,7 @@
 
             {% if usuario_nome %}
             <a href="{{ url_for('auth.perfil') }}">Meu Perfil</a>
-            <div class="separator">|</div> 
+            <div class="separator">|</div>
             <div class="user-info">
                 <span class="saudacao">Olá, {{ usuario_nome }}!</span>
                 <a href="{{ url_for('auth.logout') }}" class="logout-btn">Sair</a>
@@ -48,14 +49,14 @@
     <main>
         <div class="flash-message-container">
             {% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-                {% for category, message in messages %}
-                  <div class="flash-message flash-message-{{ category }}">
-                    <span>{{ message }}</span>
-                    <span class="close-btn">&times;</span> {# Botão de fechar #}
-                  </div>
-                {% endfor %}
-              {% endif %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-message flash-message-{{ category }}">
+                <span>{{ message }}</span>
+                <span class="close-btn">&times;</span> {# Botão de fechar #}
+            </div>
+            {% endfor %}
+            {% endif %}
             {% endwith %}
         </div>
 
@@ -86,7 +87,8 @@
         </div>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/flash_messages.js') }}"></script> {# Importa o JavaScript para as mensagens #}
+    <script src="{{ url_for('static', filename='js/flash_messages.js') }}"></script> {# Importa o JavaScript para as
+    mensagens #}
     {% block extra_js %}{% endblock %}
 </body>
 

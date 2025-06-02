@@ -2,13 +2,15 @@
 
 from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, session, flash, current_app
-from database import get_db # Importa a função get_db
-from auth import login_required # Importa o decorador de login
+from database import get_db  # Importa a função get_db
+from auth import login_required  # Importa o decorador de login
 
 # Cria um Blueprint para as rotas de administração
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # ----- DECORATOR ADMIN -----
+
+
 def admin_required(f):
     """
     Decorador que verifica se o usuário logado é um administrador.
@@ -30,6 +32,8 @@ def admin_required(f):
     return wrapped
 
 # ----- ROTAS DE ADMINISTRAÇÃO -----
+
+
 @bp.route('/')
 @login_required
 @admin_required
@@ -72,7 +76,8 @@ def admin():
     contact_anunciante_clicks_row = db.execute(
         "SELECT count FROM click_counts WHERE event_name = 'contact_anunciante_click'"
     ).fetchone()
-    contact_anunciante_clicks = contact_anunciante_clicks_row['count'] if contact_anunciante_clicks_row else 0
+    contact_anunciante_clicks = contact_anunciante_clicks_row[
+        'count'] if contact_anunciante_clicks_row else 0
 
     acessos = getattr(current_app, 'acessos', 0)
 
@@ -86,38 +91,45 @@ def admin():
         acessos=acessos,
         imoveis=imoveis,
         solicitacoes_pendentes=solicitacoes_pendentes,
-        contact_anunciante_clicks=contact_anunciante_clicks # Passa a contagem de cliques para o template
+        # Passa a contagem de cliques para o template
+        contact_anunciante_clicks=contact_anunciante_clicks
     )
 
 # Rotas para gerenciar solicitações de exclusão de conta
+
+
 @bp.route('/aceitar_exclusao/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
 def aceitar_exclusao(user_id):
     db = get_db()
-    
-    user = db.execute('SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
+
+    user = db.execute(
+        'SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
     if not user or user['solicitacao_exclusao'] != 1:
         flash('Solicitação de exclusão não encontrada ou não pendente.', 'warning')
         return redirect(url_for('admin.admin'))
 
     # ATENÇÃO: Ao aceitar a exclusão, todos os imóveis associados a este usuário serão DELETADOS.
     db.execute('DELETE FROM imoveis WHERE usuario_id = ?', (user_id,))
-    
+
     db.execute('DELETE FROM usuarios WHERE id = ?', (user_id,))
     db.commit()
-    
-    flash(f'Solicitação de exclusão para o usuário ID {user_id} aprovada e conta excluída.', 'success')
+
+    flash(
+        f'Solicitação de exclusão para o usuário ID {user_id} aprovada e conta excluída.', 'success')
     # TODO: Lógica para enviar e-mail de aprovação aqui.
     return redirect(url_for('admin.admin'))
+
 
 @bp.route('/negar_exclusao/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
 def negar_exclusao(user_id):
     db = get_db()
-    
-    user = db.execute('SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
+
+    user = db.execute(
+        'SELECT solicitacao_exclusao FROM usuarios WHERE id = ?', (user_id,)).fetchone()
     if not user or user['solicitacao_exclusao'] != 1:
         flash('Solicitação de exclusão não encontrada ou não pendente.', 'warning')
         return redirect(url_for('admin.admin'))
@@ -128,16 +140,19 @@ def negar_exclusao(user_id):
         (user_id,)
     )
     db.commit()
-    flash(f'Solicitação de exclusão para o usuário ID {user_id} negada.', 'info')
+    flash(
+        f'Solicitação de exclusão para o usuário ID {user_id} negada.', 'info')
     # TODO: Lógica para enviar e-mail de negação aqui.
     return redirect(url_for('admin.admin'))
+
 
 @bp.route('/admin/toggle_anuncio/<int:id>', methods=['POST'])
 @login_required
 @admin_required
 def admin_toggle_anuncio(id):
     db = get_db()
-    imovel = db.execute('SELECT ativo FROM imoveis WHERE id = ?', (id,)).fetchone()
+    imovel = db.execute(
+        'SELECT ativo FROM imoveis WHERE id = ?', (id,)).fetchone()
 
     if imovel is None:
         flash('Imóvel não encontrado.', 'danger')
@@ -146,8 +161,10 @@ def admin_toggle_anuncio(id):
     novo_status = 0 if imovel['ativo'] else 1
     db.execute('UPDATE imoveis SET ativo = ? WHERE id = ?', (novo_status, id))
     db.commit()
-    flash(f'Status do anúncio alterado para {"ativo" if novo_status else "inativo"} com sucesso!', 'success')
+    flash(
+        f'Status do anúncio alterado para {"ativo" if novo_status else "inativo"} com sucesso!', 'success')
     return redirect(url_for('admin.admin'))
+
 
 @bp.route('/admin/excluir_imovel/<int:id>', methods=['POST'])
 @login_required
@@ -161,6 +178,7 @@ def admin_excluir_imovel(id):
     else:
         flash('Imóvel não encontrado.', 'danger')
     return redirect(url_for('admin.admin'))
+
 
 @bp.route('/admin/excluir_usuario/<int:id>', methods=['POST'])
 @login_required

@@ -122,6 +122,7 @@ def logout():
 
 # Adicione estas novas rotas ao final do arquivo auth.py
 
+
 @bp.route('/perfil', methods=['GET', 'POST'])
 @login_required
 def perfil():
@@ -132,9 +133,9 @@ def perfil():
         # Processa a atualização de dados
         nome = request.form['nome']
         email = request.form['email']
-        senha = request.form['senha'] # Note: Senha não está hashada
+        senha = request.form['senha']  # Note: Senha não está hashada
         telefone = request.form['telefone']
-        
+
         try:
             db.execute(
                 'UPDATE usuarios SET nome = ?, email = ?, senha = ?, telefone = ? WHERE id = ?',
@@ -156,9 +157,11 @@ def perfil():
 
     if not user:
         flash('Usuário não encontrado.', 'danger')
-        return redirect(url_for('auth.login')) # Redireciona se o usuário sumir
+        # Redireciona se o usuário sumir
+        return redirect(url_for('auth.login'))
 
     return render_template('perfil.html', user=user)
+
 
 @bp.route('/solicitar_exclusao', methods=['POST'])
 @login_required

@@ -24,26 +24,28 @@ app.register_blueprint(admin_bp)
 # Variável global para contagem de acessos (exemplo)
 app.acessos = 0
 
+
 @app.route('/track_click', methods=['POST'])
 def track_click():
-    if request.is_json: # Verifica se o corpo da requisição é JSON
-        data = request.get_json() # Pega os dados JSON
-        event_name = data.get('event_name') # Pega o nome do evento
+    if request.is_json:  # Verifica se o corpo da requisição é JSON
+        data = request.get_json()  # Pega os dados JSON
+        event_name = data.get('event_name')  # Pega o nome do evento
 
         if event_name:
-            db = get_db() # Obtém a conexão com o banco de dados
+            db = get_db()  # Obtém a conexão com o banco de dados
             # Insere ou atualiza a contagem do evento.
             # Se o evento existe, ele incrementa; se não, ele insere com 1.
             db.execute(
                 'INSERT OR REPLACE INTO click_counts (event_name, count) VALUES (?, COALESCE((SELECT count FROM click_counts WHERE event_name = ?), 0) + 1)',
                 (event_name, event_name)
             )
-            db.commit() # Salva as mudanças
+            db.commit()  # Salva as mudanças
             return jsonify(success=True, message=f"Clique para '{event_name}' rastreado com sucesso"), 200
     return jsonify(success=False, message="Requisição inválida"), 400
 
 # ----- CONTEXTO GLOBAL (mantido aqui para ser global para toda a aplicação) -----
 # Este context_processor é global para todas as rotas de todos os blueprints
+
 
 @app.context_processor
 def inject_usuario():
@@ -67,6 +69,7 @@ def inject_usuario():
 
 # Antes de cada requisição, tenta obter o usuário logado e armazená-lo em 'g'
 
+
 @app.before_request
 def load_logged_in_user():
     user_id = session.get('usuario_id')
@@ -76,6 +79,7 @@ def load_logged_in_user():
         g.usuario_id = user_id  # Armazena o ID do usuário em g para fácil acesso
 
 # ----- ROTAS DE PÁGINAS BÁSICAS -----
+
 
 @app.route('/')
 def index():
@@ -100,7 +104,6 @@ def termos():
     Rota da página "Termos de Uso".
     """
     return render_template('termos.html')
-
 
 
 if __name__ == '__main__':

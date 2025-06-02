@@ -13,10 +13,12 @@
             <div class="auth-column login-column">
                 <h2>Entrar na Republic</h2>
                 <form class="auth-form" action="/login" method="post">
-                    <input type="email" name="email" placeholder="E-mail" required />
-                    <input type="password" name="senha" placeholder="Senha" required />
+                    <input type="email" name="email" placeholder="E-mail" title="" required />
+                    <input type="password" name="senha" placeholder="Senha" title="" required />
                     <button type="submit">Entrar</button>
+                    <a href="" class="auth-button-secondary">Esqueci a senha</a>
                 </form>
+
                 {% if mensagem_login %}
                 <p class="login-message">{{ mensagem_login }}</p>
                 {% endif %}
@@ -25,15 +27,16 @@
             <div class="auth-column cadastro-column">
                 <h2>Criar Conta</h2>
                 <form class="auth-form" action="/cadastro" method="post" onsubmit="return validarTelefoneECPF()">
-                    <input type="text" name="nome" placeholder="Nome completo" required />
+                    <input type="text" name="nome" placeholder="Nome completo" title="" required />
 
                     <div class="cpf-field" id="cpfFieldContainer">
                         <input type="text" name="cpf" id="cpf" placeholder="CPF (somente números)" pattern="\d{11}"
                             title="CPF deve conter 11 números." required />
                     </div>
 
-                    <input type="email" name="email" placeholder="E-mail" required />
-                    <input type="password" name="senha" placeholder="Senha" required />
+                    <input type="email" name="email" placeholder="E-mail" title="" required />
+                    <input type="password" name="senha" placeholder="Senha"
+                        title="Utilize letras, números e símbolos para um senha mais segura." required />
                     <input type="text" name="telefone" id="telefone" placeholder="Telefone"
                         pattern="\(\d{2}\) \d{5}-\d{4}" title="Formato esperado: (99) 99999-9999" required />
 

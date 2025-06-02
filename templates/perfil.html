@@ -12,9 +12,9 @@
     <h1>Meu Perfil</h1>
 
     {% if user.solicitacao_exclusao == 1 %}
-        <div class="solicitacao-pendente">
-            Sua solicitação de exclusão de conta está pendente de aprovação do administrador.
-        </div>
+    <div class="solicitacao-pendente">
+        Sua solicitação de exclusão de conta está pendente de aprovação do administrador.
+    </div>
     {% endif %}
 
     <form method="POST" action="{{ url_for('auth.perfil') }}">
@@ -35,13 +35,15 @@
 
     <div class="delete-section">
         <h3>Solicitar Exclusão da Conta</h3>
-        <p>Ao solicitar a exclusão, sua conta será marcada para revisão por um administrador. Sua conta e todos os imóveis associados serão permanentemente removidos após a aprovação.</p>
+        <p>Ao solicitar a exclusão, sua conta será marcada para revisão por um administrador. Sua conta e todos os
+            imóveis associados serão permanentemente removidos após a aprovação.</p>
         {% if user.solicitacao_exclusao == 0 %}
-            <form method="POST" action="{{ url_for('auth.solicitar_exclusao') }}" onsubmit="return confirm('Tem certeza que deseja solicitar a exclusão da sua conta? Esta ação é irreversível se aprovada.');">
-                <button type="submit" class="btn-danger">Solicitar Exclusão de Conta</button>
-            </form>
+        <form method="POST" action="{{ url_for('auth.solicitar_exclusao') }}"
+            onsubmit="return confirm('Tem certeza que deseja solicitar a exclusão da sua conta? Esta ação é irreversível se aprovada.');">
+            <button type="submit" class="btn-danger">Solicitar Exclusão de Conta</button>
+        </form>
         {% elif user.solicitacao_exclusao == 1 %}
-            <p>Você já possui uma solicitação de exclusão pendente.</p>
+        <p>Você já possui uma solicitação de exclusão pendente.</p>
         {% endif %}
     </div>
 </div>
