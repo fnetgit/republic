@@ -42,14 +42,58 @@ th {
 }
 
 /* Estatísticas */
-.stats {
+.stats-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os cards quebrem a linha */
+    gap: 20px; /* Espaço entre os cards */
+    justify-content: center; /* Centraliza os cards horizontalmente */
     margin-bottom: 2rem;
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 6px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    max-width: 1200px; /* Para alinhar com o container principal */
-    margin: 20px auto; /* Centraliza */
+    max-width: 1200px; /* Alinha com o admin-container */
+    margin: 20px auto; /* Centraliza o container de stats */
+    padding: 10px; /* Padding interno para o container de stats */
+    background-color: #f8f9fa; /* Um fundo leve para o container */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Estilo individual para cada card de estatística */
+.stat-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex: 1; /* Permite que os cards cresçam */
+    min-width: 180px; /* Largura mínima para cada card */
+    max-width: 220px; /* Largura máxima para cada card, para não ficarem gigantes */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o nome da estatística */
+.card-name {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Estilo para o número da estatística */
+.card-number {
+    font-size: 2.2em; /* Tamanho maior */
+    color: #007bff; /* Cor principal, ajuste se quiser */
+    font-weight: bold;
+    line-height: 1; /* Para centralizar verticalmente o número */
 }
 
 /* Container principal (APENAS PARA EMPILHAR AS SEÇÕES) */

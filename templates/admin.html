@@ -9,12 +9,33 @@
 {% block content %}
 <h1>Painel Administrativo</h1>
 
-<div class="stats">
-    <div><strong>Usuários cadastrados:</strong> {{ total_usuarios }}</div>
-    <div><strong>Imóveis ativos:</strong> {{ ativos }}</div>
-    <div><strong>Imóveis inativos:</strong> {{ inativos }}</div>
-    <div><strong>Total de imóveis:</strong> {{ total_imoveis }}</div>
-    <div><strong>Estimativa de acessos (sessão atual):</strong> {{ acessos }}</div>
+<div class="stats-container"> 
+
+    <div class="stat-card">
+        <div class="card-name">Usuários cadastrados</div>
+        <div class="card-number">{{ total_usuarios }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-name">Imóveis ativos</div>
+        <div class="card-number">{{ ativos }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-name">Imóveis inativos</div>
+        <div class="card-number">{{ inativos }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-name">Total de imóveis</div>
+        <div class="card-number">{{ total_imoveis }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-name">Acessos </br> (sessão atual)</div>
+        <div class="card-number">{{ acessos }}</div>
+    </div>
+
 </div>
 
 <div class="admin-container">
