@@ -66,14 +66,18 @@
             <label><input type="checkbox" name="tipo" value="casa"> Casa</label>
 
             <h4>Quartos</h4>
-            <label><input type="checkbox" name="quartos" value="1"> 1 quarto</label><br>
-            <label><input type="checkbox" name="quartos" value="2"> 2 quartos</label><br>
-            <label><input type="checkbox" name="quartos" value="3"> 3 ou mais</label>
-
+            <div class="slider-container">
+                 <label for="quartosSlider">Mínimo de Quartos:</label>
+                 <input type="range" id="quartosSlider" name="quartosSlider" min="1" max="5" value="1">
+                 <span id="quartosValue">1</span></div>
+            
             <h4>Extras</h4>
             <label><input type="checkbox" name="extras" value="agua"> Água</label><br>
-            <label><input type="checkbox" name="extras" value="energia"> Energia</label><br>
-            <label><input type="checkbox" name="extras" value="internet"> Internet</label>
+            <label><input type="checkbox" name="extras" value="luz"> Luz</label><br>
+            <label><input type="checkbox" name="extras" value="internet"> Internet</label><br>
+            <label><input type="checkbox" name="extras" value="mobiliado"> Mobiliado</label><br>
+            <label><input type="checkbox" name="extras" value="gas"> Gás</label><br>
+            <label><input type="checkbox" name="extras" value="garagem"> Garagem</label>
         </aside>
 
         <section class="cards" id="cardContainer">

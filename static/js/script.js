@@ -135,10 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cards = document.querySelectorAll('.card');
 
     // Filtros
-    const minValue = parseFloat(document.getElementById('minValor').value) || 0;
-    const maxValue = parseFloat(document.getElementById('maxValor').value) || Infinity;
     const tipoCheckboxes = document.querySelectorAll('input[name="tipo"]');
-    const quartosCheckboxes = document.querySelectorAll('input[name="quartos"]');
     const extrasCheckboxes = document.querySelectorAll('input[name="extras"]');
 
     function getCheckedValues(inputs) {
@@ -149,10 +146,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function filtrarCards() {
         const searchText = searchInput.value.toLowerCase();
-
-        const valorSelecionado = document.querySelector('input[name="valor"]:checked').value;
+        const minValor = parseFloat(document.getElementById('minValor').value) || 0;
+        const maxValor = parseFloat(document.getElementById('maxValor').value) || Infinity;
         const tiposSelecionados = getCheckedValues(tipoCheckboxes);
-        const quartosSelecionados = getCheckedValues(quartosCheckboxes);
+        const minQuartos = parseInt(document.getElementById('quartosSlider').value);
         const extrasSelecionados = getCheckedValues(extrasCheckboxes);
 
         cards.forEach(card => {
@@ -169,10 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let passaTipo = tiposSelecionados.length === 0 || tiposSelecionados.includes(tipo);
 
             // Filtro de quartos
-            let passaQuartos = quartosSelecionados.length === 0 ||
-                (quartosSelecionados.includes('3') && quartos >= 3) ||
-                quartosSelecionados.includes(String(quartos));
-
+            let passaQuartos = quartos >= minQuartos;
+            
             // Filtro de extras
             let passaExtras = extrasSelecionados.every(extra => extras.includes(extra));
 
@@ -190,9 +185,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Eventos
     searchInput.addEventListener('input', filtrarCards);
-    document.getElementById('minValue').addEventListener('input', filtrarCards);
-    document.getElementById('maxValue').addEventListener('input', filtrarCards);
+    document.getElementById('minValor').addEventListener('input', filtrarCards);
+    document.getElementById('maxValor').addEventListener('input', filtrarCards);
     tipoCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
-    quartosCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+
+    const quartosSlider = document.getElementById('quartosSlider');
+    const quartosValueSpan = document.getElementById('quartosValue');
+    quartosSlider.addEventListener('input', () => {
+    quartosValueSpan.textContent = quartosSlider.value; // Atualiza o texto do span
+    filtrarCards(); // Filtra os cards
+    });
     extrasCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+    filtrarCards()
 });
