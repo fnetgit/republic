@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Republic{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/flash_messages.css') }}"> {# Importa o CSS para as
-    mensagens flash #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flash_messages.css') }}"> 
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -53,7 +52,7 @@
             {% for category, message in messages %}
             <div class="flash-message flash-message-{{ category }}">
                 <span>{{ message }}</span>
-                <span class="close-btn">&times;</span> {# Botão de fechar #}
+                <span class="close-btn">&times;</span>
             </div>
             {% endfor %}
             {% endif %}
@@ -87,8 +86,7 @@
         </div>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/flash_messages.js') }}"></script> {# Importa o JavaScript para as
-    mensagens #}
+    <script src="{{ url_for('static', filename='js/flash_messages.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 

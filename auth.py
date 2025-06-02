@@ -10,7 +10,6 @@ bp = Blueprint('auth', __name__, url_prefix='/')
 
 # ----- DECORATOR LOGIN -----
 
-
 def login_required(f):
     """
     Decorador que verifica se o usuário está logado.
@@ -26,7 +25,6 @@ def login_required(f):
     return wrapped
 
 # ----- CONTEXTO GLOBAL (mantido aqui para o exemplo, mas pode ser movido para app.py se for global para toda a aplicação) -----
-
 
 @bp.context_processor
 def inject_usuario():
@@ -97,7 +95,6 @@ def login():
             return redirect(url_for('index'))
         flash('Email ou senha inválidos!', 'danger')
     return render_template('cadastro.html')
-
 
 @bp.route('/esqueci_senha', methods=['GET', 'POST'])
 def esqueci_senha():

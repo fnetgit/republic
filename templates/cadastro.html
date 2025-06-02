@@ -12,11 +12,13 @@
         <div class="auth-container">
             <div class="auth-column login-column">
                 <h2>Entrar na Republic</h2>
-                <form class="auth-form" action="/login" method="post">
-                    <input type="email" name="email" placeholder="E-mail" title="" required />
-                    <input type="password" name="senha" placeholder="Senha" title="" required />
-                    <button type="submit">Entrar</button>
-                    <a href="" class="auth-button-secondary">Esqueci a senha</a>
+                <form class="auth-form" action="{{ url_for('auth.login') }}" method="post">
+                    <input type="email" name="email" placeholder="E-mail" title="" required class="form-control" />
+                    <input type="password" name="senha" placeholder="Senha" title="" required class="form-control" />
+                    <button type="submit" class="btn-primary">Entrar</button>
+                    <div class="forgot-password-link">
+                        <a href="{{ url_for('auth.esqueci_senha') }}" class="auth-links-small">Esqueci a senha</a>
+                    </div>
                 </form>
 
                 {% if mensagem_login %}

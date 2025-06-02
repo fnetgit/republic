@@ -69,7 +69,6 @@ def inject_usuario():
 
 # Antes de cada requisição, tenta obter o usuário logado e armazená-lo em 'g'
 
-
 @app.before_request
 def load_logged_in_user():
     user_id = session.get('usuario_id')
@@ -80,7 +79,6 @@ def load_logged_in_user():
 
 # ----- ROTAS DE PÁGINAS BÁSICAS -----
 
-
 @app.route('/')
 def index():
     """
@@ -89,7 +87,6 @@ def index():
     app.acessos += 1
     return render_template('index.html')
 
-
 @app.route('/sobre')
 def sobre():
     """
@@ -97,14 +94,12 @@ def sobre():
     """
     return render_template('sobre.html')
 
-
 @app.route('/termos')
 def termos():
     """
     Rota da página "Termos de Uso".
     """
     return render_template('termos.html')
-
 
 if __name__ == '__main__':
     # Inicializa o banco de dados dentro de um contexto de aplicação

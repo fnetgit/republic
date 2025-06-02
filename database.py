@@ -4,7 +4,6 @@ import sqlite3
 import os
 from flask import g, current_app
 
-
 def get_db():
     """
     Obtém uma conexão com o banco de dados SQLite.
@@ -19,7 +18,6 @@ def get_db():
         g.db.row_factory = sqlite3.Row  # Permite acessar colunas por nome
     return g.db
 
-
 def close_db(e=None):
     """
     Fecha a conexão com o banco de dados no final da requisição.
@@ -27,7 +25,6 @@ def close_db(e=None):
     db = g.pop('db', None)
     if db is not None:
         db.close()
-
 
 def inicializar_banco():
     """

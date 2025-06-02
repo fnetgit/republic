@@ -10,7 +10,6 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # ----- DECORATOR ADMIN -----
 
-
 def admin_required(f):
     """
     Decorador que verifica se o usuário logado é um administrador.
@@ -32,7 +31,6 @@ def admin_required(f):
     return wrapped
 
 # ----- ROTAS DE ADMINISTRAÇÃO -----
-
 
 @bp.route('/')
 @login_required
@@ -96,7 +94,6 @@ def admin():
     )
 
 # Rotas para gerenciar solicitações de exclusão de conta
-
 
 @bp.route('/aceitar_exclusao/<int:user_id>', methods=['POST'])
 @login_required

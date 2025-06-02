@@ -12,7 +12,6 @@ bp = Blueprint('properties', __name__, url_prefix='/')
 
 # ----- ROTAS DE PÁGINAS DE IMÓVEIS -----
 
-
 @bp.route('/pesquisa')
 def pesquisa():
     """

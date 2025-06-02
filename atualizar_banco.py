@@ -5,7 +5,6 @@ from app import Config  # Assumindo que Config está acessível de app.py
 
 DATABASE = Config.DATABASE
 
-
 def criar_tabela_contagem_cliques():
     conn = None
     try:
@@ -41,7 +40,6 @@ def criar_tabela_contagem_cliques():
     finally:
         if conn:
             conn.close()
-
 
 if __name__ == '__main__':
     criar_tabela_contagem_cliques()
