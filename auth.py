@@ -99,6 +99,14 @@ def login():
     return render_template('cadastro.html')
 
 
+@bp.route('/esqueci_senha', methods=['GET', 'POST'])
+def esqueci_senha():
+    """
+    Rota da página "Esqueci a senha".
+    """
+    return render_template('esqueci_senha.html')
+
+
 @bp.route('/logout')
 @login_required
 def logout():
@@ -109,18 +117,6 @@ def logout():
     session.pop('usuario_id', None)
     flash('Você foi desconectado.', 'info')
     return redirect(url_for('auth.login'))
-
-# auth.py (parte que será alterada/adicionada)
-
-# ... (imports existentes)
-# from functools import wraps
-# from flask import Blueprint, render_template, request, redirect, url_for, session, g, flash
-# import sqlite3
-# from database import get_db
-
-# ... (código existente até o final)
-
-# Adicione estas novas rotas ao final do arquivo auth.py
 
 
 @bp.route('/perfil', methods=['GET', 'POST'])
