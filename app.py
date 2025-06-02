@@ -1,8 +1,8 @@
 # app.py (Arquivo principal da aplicação)
 
-from flask import Flask, render_template, g, flash, session
+from flask import Flask, render_template, g, flash, session, jsonify, request
 # Importa funções do módulo database
-from database import close_db, inicializar_banco
+from database import close_db, inicializar_banco, get_db
 # Importa o blueprint de autenticação e o decorador
 from auth import bp as auth_bp, login_required
 from properties import bp as properties_bp  # Importa o blueprint de imóveis
@@ -23,6 +23,24 @@ app.register_blueprint(admin_bp)
 
 # Variável global para contagem de acessos (exemplo)
 app.acessos = 0
+
+@app.route('/track_click', methods=['POST'])
+def track_click():
+    if request.is_json: # Verifica se o corpo da requisição é JSON
+        data = request.get_json() # Pega os dados JSON
+        event_name = data.get('event_name') # Pega o nome do evento
+
+        if event_name:
+            db = get_db() # Obtém a conexão com o banco de dados
+            # Insere ou atualiza a contagem do evento.
+            # Se o evento existe, ele incrementa; se não, ele insere com 1.
+            db.execute(
+                'INSERT OR REPLACE INTO click_counts (event_name, count) VALUES (?, COALESCE((SELECT count FROM click_counts WHERE event_name = ?), 0) + 1)',
+                (event_name, event_name)
+            )
+            db.commit() # Salva as mudanças
+            return jsonify(success=True, message=f"Clique para '{event_name}' rastreado com sucesso"), 200
+    return jsonify(success=False, message="Requisição inválida"), 400
 
 # ----- CONTEXTO GLOBAL (mantido aqui para ser global para toda a aplicação) -----
 # Este context_processor é global para todas as rotas de todos os blueprints
@@ -82,6 +100,7 @@ def termos():
     Rota da página "Termos de Uso".
     """
     return render_template('termos.html')
+
 
 
 if __name__ == '__main__':

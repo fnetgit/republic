@@ -1,26 +1,32 @@
-# adicionar_coluna_db.py
+# criar_tabela_cliques.py
 import sqlite3
 import os
+from app import Config # Assumindo que Config está acessível de app.py
 
-# Certifique-se de que o caminho para o seu banco de dados está correto
-DATABASE = 'instance/banco.db' 
+DATABASE = Config.DATABASE
 
-def adicionar_coluna_solicitacao_exclusao():
+def criar_tabela_contagem_cliques():
     conn = None
     try:
         os.makedirs(os.path.dirname(DATABASE), exist_ok=True) # Garante que a pasta 'instance' exista
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
         
-        # Verifica se a coluna já existe para evitar erros ao rodar mais de uma vez
-        cursor.execute("PRAGMA table_info(usuarios)")
-        columns = [col[1] for col in cursor.fetchall()]
-        
-        if 'solicitacao_exclusao' not in columns:
-            cursor.execute("ALTER TABLE usuarios ADD COLUMN solicitacao_exclusao INTEGER DEFAULT 0")
-            print("Coluna 'solicitacao_exclusao' adicionada à tabela 'usuarios' com sucesso.")
+        # Verifica se a tabela já existe
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='click_counts';")
+        if cursor.fetchone() is None: # Se a tabela não existe
+            cursor.execute('''
+                CREATE TABLE click_counts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_name TEXT NOT NULL UNIQUE,
+                    count INTEGER DEFAULT 0
+                )
+            ''')
+            # Inicializa com o evento específico que queremos rastrear
+            cursor.execute("INSERT INTO click_counts (event_name, count) VALUES (?, ?)", ('contact_anunciante_click', 0))
+            print("Tabela 'click_counts' criada e inicializada com 'contact_anunciante_click'.")
         else:
-            print("Coluna 'solicitacao_exclusao' já existe na tabela 'usuarios'.")
+            print("Tabela 'click_counts' já existe.")
         
         conn.commit()
     except sqlite3.Error as e:
@@ -32,4 +38,4 @@ def adicionar_coluna_solicitacao_exclusao():
             conn.close()
 
 if __name__ == '__main__':
-    adicionar_coluna_solicitacao_exclusao()
+    criar_tabela_contagem_cliques()

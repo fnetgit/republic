@@ -62,11 +62,17 @@ def admin():
         '''
     ).fetchall()
 
-    # NOVO: Busca por solicitações de exclusão pendentes (solicitacao_exclusao = 1)
+    # Busca por solicitações de exclusão pendentes (solicitacao_exclusao = 1)
     solicitacoes_pendentes = db.execute(
         'SELECT id, nome, email, telefone FROM usuarios WHERE solicitacao_exclusao = 1'
     ).fetchall()
 
+    # Busca a contagem de cliques no botão "Falar com anunciante"
+    # COALESCE garante que, se a linha não existir (ainda não houve cliques), ele retorne 0.
+    contact_anunciante_clicks_row = db.execute(
+        "SELECT count FROM click_counts WHERE event_name = 'contact_anunciante_click'"
+    ).fetchone()
+    contact_anunciante_clicks = contact_anunciante_clicks_row['count'] if contact_anunciante_clicks_row else 0
 
     acessos = getattr(current_app, 'acessos', 0)
 
@@ -79,10 +85,11 @@ def admin():
         inativos=inativos,
         acessos=acessos,
         imoveis=imoveis,
-        solicitacoes_pendentes=solicitacoes_pendentes # NOVO: Passa as solicitações para o template
+        solicitacoes_pendentes=solicitacoes_pendentes,
+        contact_anunciante_clicks=contact_anunciante_clicks # Passa a contagem de cliques para o template
     )
 
-# NOVO: Rotas para gerenciar solicitações de exclusão de conta
+# Rotas para gerenciar solicitações de exclusão de conta
 @bp.route('/aceitar_exclusao/<int:user_id>', methods=['POST'])
 @login_required
 @admin_required
@@ -95,7 +102,6 @@ def aceitar_exclusao(user_id):
         return redirect(url_for('admin.admin'))
 
     # ATENÇÃO: Ao aceitar a exclusão, todos os imóveis associados a este usuário serão DELETADOS.
-    # Se você quiser outra lógica (ex: manter imóveis sem dono, marcar como inativo), modifique aqui.
     db.execute('DELETE FROM imoveis WHERE usuario_id = ?', (user_id,))
     
     db.execute('DELETE FROM usuarios WHERE id = ?', (user_id,))

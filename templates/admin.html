@@ -9,7 +9,7 @@
 {% block content %}
 <h1>Painel Administrativo</h1>
 
-<div class="stats-container"> 
+<div class="stats-container">
 
     <div class="stat-card">
         <div class="card-name">Usuários cadastrados</div>
@@ -32,8 +32,13 @@
     </div>
 
     <div class="stat-card">
-        <div class="card-name">Acessos </br> (sessão atual)</div>
+        <div class="card-name">Acessos (sessão atual)</div>
         <div class="card-number">{{ acessos }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="card-name">Anunciantes contatados</div>
+        <div class="card-number">{{ contact_anunciante_clicks }}</div>
     </div>
 
 </div>
