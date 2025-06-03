@@ -1,6 +1,10 @@
 /* ===== pesquisa.css (/_css/pesquisa.css) ===== */
 
 /* Override para não herdar width/height fixos de .card do style.css */
+html, body {
+    overflow-x: hidden; /* Bloqueia o scroll horizontal */
+    width: 100%; 
+}
 
 .search-bar {
     margin: 20px;
