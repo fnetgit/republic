@@ -129,77 +129,105 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// filtros
-document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById('searchInput');
-    const cards = document.querySelectorAll('.card');
+// static/js/pesquisa_filtros.js (NOVA VERSÃO PARA NOVOS FILTROS)
 
-    // Filtros
-    const valorRadios = document.querySelectorAll('input[name="valor"]');
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const cardContainer = document.getElementById('cardContainer');
+    const allCards = Array.from(cardContainer.querySelectorAll('.card')); // Captura todos os cards uma vez
+
+    // Elementos do filtro de Valor
+    const minValorInput = document.getElementById('minValor');
+    const maxValorInput = document.getElementById('maxValor');
+
+    // Elementos do filtro de Tipo
     const tipoCheckboxes = document.querySelectorAll('input[name="tipo"]');
-    const quartosCheckboxes = document.querySelectorAll('input[name="quartos"]');
+
+    // Elementos do filtro de Quartos (Slider)
+    const quartosSlider = document.getElementById('quartosSlider');
+    const quartosValueSpan = document.getElementById('quartosValue');
+
+    // Elementos do filtro de Extras
     const extrasCheckboxes = document.querySelectorAll('input[name="extras"]');
 
-    function getCheckedValues(inputs) {
-        return Array.from(inputs)
-            .filter(input => input.checked)
-            .map(input => input.value);
-    }
+    // --- Event Listeners ---
+    searchInput.addEventListener('input', applyFilters); // 'input' para capturar mudanças em tempo real
+    minValorInput.addEventListener('input', applyFilters);
+    maxValorInput.addEventListener('input', applyFilters);
+    tipoCheckboxes.forEach(checkbox => checkbox.addEventListener('change', applyFilters));
+    quartosSlider.addEventListener('input', () => {
+        quartosValueSpan.textContent = quartosSlider.value; // Atualiza o span do slider
+        applyFilters(); // Aplica os filtros ao mover o slider
+    });
+    extrasCheckboxes.forEach(checkbox => checkbox.addEventListener('change', applyFilters));
 
-    function filtrarCards() {
-        const searchText = searchInput.value.toLowerCase();
+    // --- Função Principal de Filtragem ---
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
 
-        const valorSelecionado = document.querySelector('input[name="valor"]:checked').value;
-        const tiposSelecionados = getCheckedValues(tipoCheckboxes);
-        const quartosSelecionados = getCheckedValues(quartosCheckboxes);
-        const extrasSelecionados = getCheckedValues(extrasCheckboxes);
+        // Valores de filtro
+        const minValor = parseFloat(minValorInput.value) || 0; // Garante que é um número, ou 0
+        const maxValor = parseFloat(maxValorInput.value) || Infinity; // Garante que é um número, ou infinito
 
-        cards.forEach(card => {
-            const tipo = card.dataset.tipo;
-            const quartos = parseInt(card.dataset.quartos);
-            const valor = parseFloat(card.dataset.valor);
-            const extras = card.dataset.extras.toLowerCase();
-            const endereco = card.dataset.endereco.toLowerCase();
+        const selectedTipos = Array.from(tipoCheckboxes)
+                                .filter(checkbox => checkbox.checked)
+                                .map(checkbox => checkbox.value.toLowerCase());
 
-            // Filtro de valor
-            let passaValor = false;
-            if (valorSelecionado === 'todos') {
-                passaValor = true;
-            } else if (valorSelecionado === '500') {
-                passaValor = valor <= 500;
-            } else if (valorSelecionado === '1000') {
-                passaValor = valor <= 1000;
-            } else if (valorSelecionado === 'acima') {
-                passaValor = valor > 1000;
+        const minQuartos = parseInt(quartosSlider.value); // Valor do slider
+
+        const selectedExtras = Array.from(extrasCheckboxes)
+                                .filter(checkbox => checkbox.checked)
+                                .map(checkbox => checkbox.value.toLowerCase());
+
+        allCards.forEach(card => {
+            const cardTipo = card.dataset.tipo.toLowerCase();
+            const cardQuartos = parseInt(card.dataset.quartos);
+            const cardValor = parseFloat(card.dataset.valor);
+            const cardEndereco = card.dataset.endereco.toLowerCase();
+            const cardInclusos = card.dataset.extras ? card.dataset.extras.toLowerCase().split(',') : [];
+
+            let matches = true; // Assume que o card corresponde, e desabilita se não
+
+            // 1. Filtro por Busca (Endereço)
+            if (searchTerm && !cardEndereco.includes(searchTerm)) {
+                matches = false;
             }
 
-            // Filtro de tipo
-            let passaTipo = tiposSelecionados.length === 0 || tiposSelecionados.includes(tipo);
+            // 2. Filtro por Valor
+            if (matches && (cardValor < minValor || cardValor > maxValor)) {
+                matches = false;
+            }
 
-            // Filtro de quartos
-            let passaQuartos = quartosSelecionados.length === 0 ||
-                (quartosSelecionados.includes('3') && quartos >= 3) ||
-                quartosSelecionados.includes(String(quartos));
+            // 3. Filtro por Tipo
+            if (matches && selectedTipos.length > 0 && !selectedTipos.includes(cardTipo)) {
+                matches = false;
+            }
 
-            // Filtro de extras
-            let passaExtras = extrasSelecionados.every(extra => extras.includes(extra));
+            // 4. Filtro por Quartos (Mínimo de Quartos do Slider)
+            if (matches && cardQuartos < minQuartos) {
+                matches = false;
+            }
 
-            // Filtro de busca por endereço
-            let passaBusca = endereco.includes(searchText);
+            // 5. Filtro por Extras (TODOS os selecionados devem estar presentes)
+            if (matches && selectedExtras.length > 0) {
+                const allExtrasPresent = selectedExtras.every(selectedExtra => cardInclusos.includes(selectedExtra));
+                if (!allExtrasPresent) {
+                    matches = false;
+                }
+            }
 
-            // Mostrar ou ocultar
-            if (passaValor && passaTipo && passaQuartos && passaExtras && passaBusca) {
-                card.style.display = 'block';
+            // Exibe ou esconde o card
+            if (matches) {
+                card.style.display = 'flex'; // Ou 'block', dependendo do seu CSS de card
             } else {
                 card.style.display = 'none';
             }
         });
     }
 
-    // Eventos
-    searchInput.addEventListener('input', filtrarCards);
-    valorRadios.forEach(r => r.addEventListener('change', filtrarCards));
-    tipoCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
-    quartosCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
-    extrasCheckboxes.forEach(c => c.addEventListener('change', filtrarCards));
+    // Inicializa o valor do span do slider
+    quartosValueSpan.textContent = quartosSlider.value;
+
+    // Aplica os filtros na carga inicial da página
+    applyFilters();
 });
