@@ -64,7 +64,7 @@ main {
 }
 
 .cards {
-    width: 80%;
+    width: 78%;
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
