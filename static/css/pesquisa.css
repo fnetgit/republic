@@ -1,9 +1,11 @@
 /* ===== pesquisa.css (/_css/pesquisa.css) ===== */
 
 /* Override para não herdar width/height fixos de .card do style.css */
-html, body {
-    overflow-x: hidden; /* Bloqueia o scroll horizontal */
-    width: 100%; 
+html,
+body {
+    overflow-x: hidden;
+    /* Bloqueia o scroll horizontal */
+    width: 100%;
 }
 
 .search-bar {
@@ -40,23 +42,33 @@ main {
 
 /* NOVO: Estilo para o contêiner dos campos de valor "De:" e "Até:" */
 .filter-group-inline {
-    display: flex; /* Transforma em um contêiner flexível */
-    align-items: center; /* Alinha itens verticalmente ao centro */
-    gap: 5px; /* Espaço entre o label e o input */
-    margin-bottom: 10px; /* Espaço entre o grupo "De:" e "Até:" */
+    display: flex;
+    /* Transforma em um contêiner flexível */
+    align-items: center;
+    /* Alinha itens verticalmente ao centro */
+    gap: 5px;
+    /* Espaço entre o label e o input */
+    margin-bottom: 10px;
+    /* Espaço entre o grupo "De:" e "Até:" */
 }
 
 .filter-group-inline label {
-    flex-shrink: 0; /* Impede que o label encolha */
+    flex-shrink: 0;
+    /* Impede que o label encolha */
     font-weight: bold;
-    min-width: 20px; /* Garante uma largura mínima para os labels "De:" e "Até:" */
-    text-align: right; /* Alinha o texto do label à direita */
+    min-width: 20px;
+    /* Garante uma largura mínima para os labels "De:" e "Até:" */
+    text-align: right;
+    /* Alinha o texto do label à direita */
 }
 
 .filter-group-inline input[type="number"] {
-    flex-grow: 1; /* Faz o input preencher o espaço restante */
-    width: auto; /* Anula o width: 100% que pode estar vindo de outro lugar */
-    max-width: 55px; /* Limita a largura do input para não ficar muito grande */
+    flex-grow: 1;
+    /* Faz o input preencher o espaço restante */
+    width: auto;
+    /* Anula o width: 100% que pode estar vindo de outro lugar */
+    max-width: 55px;
+    /* Limita a largura do input para não ficar muito grande */
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -67,12 +79,12 @@ main {
     width: 78%;
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
 .cards .card {
-    width: 350px;
+    width: 100%;
     height: 300px;
     background: white;
     border: 1px solid #ccc;
@@ -145,9 +157,14 @@ footer {
 
 /* NOVO: Contêiner principal para os campos "De:" e "Até:" */
 .valores {
-    display: flex; /* Transforma em um contêiner flexível */
-    gap: 10px; /* Espaço entre os grupos "De:" e "Até:" */
-    margin-bottom: 10px; /* Espaço abaixo deste grupo de valor */
-    flex-wrap: wrap; /* Permite quebrar a linha em telas muito pequenas */
-    justify-content: space-between; /* Distribui o espaço entre os dois grupos */
+    display: flex;
+    /* Transforma em um contêiner flexível */
+    gap: 10px;
+    /* Espaço entre os grupos "De:" e "Até:" */
+    margin-bottom: 10px;
+    /* Espaço abaixo deste grupo de valor */
+    flex-wrap: wrap;
+    /* Permite quebrar a linha em telas muito pequenas */
+    justify-content: space-between;
+    /* Distribui o espaço entre os dois grupos */
 }
