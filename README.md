@@ -1,6 +1,7 @@
 # Republic
 
-Plataforma web para facilitar a busca de moradias estudantis próximas às universidades.
+Plataforma web para facilitar a busca de moradias estudantis próximas às universidades.  
+[Acesse](https://republic-x3yy.onrender.com/)
 
 ## Membros
 
